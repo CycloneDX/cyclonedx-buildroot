@@ -14,7 +14,19 @@ standard that provides advanced supply chain capabilities for cyber risk reducti
 
 ## Usage
 
-TODO
+**Options**
+
+By default, manifest.xslx will be read from the current working directory and the resulting bom.xml will also
+be created in the current working directory. These options can be overwritten as follows:
+
+```shell
+
+    $ python3 -m cyclonedxbuildroot.cli.generateBom -i manifest.csv
+      Usage:  cyclonedx-py [OPTIONS]
+      Options:
+        -i <path> - the alternate filename to a frozen manifest.csv
+        -o <path> - the bom file to create
+```
 
 ## CycloneDX Schema Support
 
