@@ -53,8 +53,8 @@ import cyclonedx.parser
 def create_json_from_sbom(args, br_parser):
     #
     # Insert the CycloneDX BOM_Metadata
-    thejson = {"bomFormat": "CycloneDX", "specVersion": "1.4", "version": "1",
-               "metadata": {"time": (str( datetime.utcnow())+" UTC"),
+    thejson = {"bomFormat": "CycloneDX", "specVersion": "1.4", "version": 1,
+               "metadata": {"timestamp": str(datetime.now().isoformat()),
                             "component": {"type": "firmware",
                                           "name": args.input_name,
                                           "version": args.component_version}}}
@@ -93,7 +93,7 @@ def create_json_from_sbom(args, br_parser):
                 print("Found the following in the csv file first row:", row)
                 print("Cannot continue with the provided input file. Exiting.")
                 exit(-1)
-    thejson["components"] = [final_component_details]
+    thejson["components"] = final_component_details
     outputfile = open(args.output_file, mode='w')
     json.dump(thejson, outputfile, indent=3)
     print("br_parser.component")
