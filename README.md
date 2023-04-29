@@ -11,11 +11,12 @@
 
 This [Buildroot][Buildroot_homepage] plugin generates [CycloneDX][CDX_homepage] Software Bill of Materials (SBOM) containing all direct and transitive dependencies of a buildroot project.  
 OWASP CycloneDX is a full-stack Bill of Materials (BOM) standard that provides advanced supply chain capabilities for cyber risk reduction.
+Buildroot provides a build target named "legal-info" which produces a set of files including manifest.csv.
 
 ## Usage
 
-By default, `manifest.xslx` will be read from the current working directory
-and the resulting `bom.xml` will also be created in the current working directory.  
+By default, `manifest.csv` will be read from the current working directory
+and the resulting `bom.json` will also be created in the current working directory.  
 This can be overwritten as follows:
 
 ```ShellSession
@@ -28,7 +29,7 @@ Options:
 
 ## CycloneDX Schema Support
 
-The following table provides information on the version of this modeule, the CycloneDX schema version supported, as well as the output format options.
+The following table provides information on the version of this module, the CycloneDX schema version supported, as well as the output format options.
 Use the latest possible version of this module that is compatible with the CycloneDX version supported by the target system.
 
 | Version | Schema Version | Format(s) |
