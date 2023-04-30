@@ -20,23 +20,17 @@
 # the main reason of change here is to generate an import-able bom.xml for dependency-track
 
 import argparse
-from datetime import datetime, tzinfo
-from typing import Any, Type
+from datetime import datetime
+from typing import Any
 import csv
-import json
-
 import cyclonedx.parser
 import cyclonedx.model
 
 br_parser = cyclonedx.parser
 
-
-# Support XML and JSON
 # Support BOM serial number
-# Support CycloneDX v1.4
 # Support component assemblies (if applicable to buildroot)
 # Support component dependencies
-# Support component identity (group, name, version, purl, and cpe)
 # Support metadata\tools, metadata\component (if applicable), and any other metadata object or property
 #
 
@@ -107,16 +101,12 @@ def main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv')
     parser.add_argument('-o', action='store', dest='output_file', default='export')
-    parser.add_argument('-it', action='store', dest='input_type', default='csv')
-    parser.add_argument('-ot', action='store', dest='output_type', default='csv')
     parser.add_argument('-n', action='store', dest='input_name', default='unknown')
     parser.add_argument('-v', action='store', dest='component_version', default='unknown')
 
     args = parser.parse_args()
     print('Input file: ' + args.input_file)
     print('Output BOM: ' + args.output_file)
-    print('Input Type: ' + args.input_type)
-    print('Output Type: ' + args.output_type)
     print('SBOM Component Name: ' + args.input_name)
     print('SBOM Component Version: ' + args.component_version)
 

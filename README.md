@@ -20,11 +20,15 @@ and the resulting `bom.json` will also be created in the current working directo
 This can be overwritten as follows:
 
 ```ShellSession
-$ python3 -m cyclonedxbuildroot.cli.generateBom --help
-Usage: cyclonedxbuildroot.cli.generateBom [OPTIONS]
-Options:
-  -i <path> - the alternate filename to a frozen manifest.csv
-  -o <path> - the bom file to create
+
+  
+$ python3 -m cyclonedxbuildroot.cli.generateBom -it buildroot -i <path>/manifest.csv -ot console -n "My Project" -v "1.2.3.4"
+      Usage:  generateBom.cli [OPTIONS]
+      Options:
+        -i <path> - the alternate filename to a frozen manifest.csv
+        -o <path> - the bom file to create
+        -n name of the project or product SBOM <project name in quotes>
+        -v your product SBOM version <project version in quotes>
 ```
 
 ## CycloneDX Schema Support
