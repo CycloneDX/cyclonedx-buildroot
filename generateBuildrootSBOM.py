@@ -20,43 +20,24 @@
 # the main reason of change here is to generate an import-able bom.xml for dependency-track
 
 import argparse
-from datetime import datetime
 from typing import Any
 import csv
+import json
 import cyclonedx.parser
 import cyclonedx.model
 
 br_parser = cyclonedx.parser
 
-# Support BOM serial number
-# Support component assemblies (if applicable to buildroot)
-# Support component dependencies
-# Support metadata\tools, metadata\component (if applicable), and any other metadata object or property
-#
+# TODO Support component assemblies (if applicable to buildroot)
+# TODO Support component dependencies
+# TODO Support metadata\tools, metadata\component (if applicable), and any other metadata object or property
 
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
-# example
-#
-# PACKAGE boost (1 to 1)
-# VERSION 1.69.0 (1 to 1)
-# LICENSE BSL-1.0 (many)
-# LICENSE FILES LICENSE_1_0.txt (many)
-# SOURCE ARCHIVE boost_1_69_0.tar.bz2 (1 to 1)
-# SOURCE SITE http://downloads.sourceforge.net/project/boost/boost/1.69.0 (1 to 1)
-# DEPENDENCIES WITH LICENSES skeleton-init-common [unknown] skeleton-init-systemd [unknown] toolchain-external-laird-arm [unknown] (many)
-#
 
-def create_json_from_sbom(args, parser: br_parser):
+def create_buildroot_sbom(args, parser: br_parser):
     #
-    # Insert the CycloneDX BOM_Metadata
-    thejson = {"bomFormat": "CycloneDX", "specVersion": "1.4", "version": 1,
-               "metadata": {"timestamp": str(datetime.now().isoformat()),
-                            "component": {"type": "firmware",
-                                          "name": args.input_name,
-                                          "version": args.component_version}}}
-
     # Capture the components that describe the complete inventory of first-party software
     final_component_details = list("")
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
@@ -93,9 +74,6 @@ def create_json_from_sbom(args, parser: br_parser):
                 print("Found the following in the csv file first row:", row)
                 print("Cannot continue with the provided input file. Exiting.")
                 exit(-1)
-    thejson["components"] = final_component_details
-    #outputfile = open(args.output_file, mode='w')
-    #json.dump(thejson, outputfile, indent=3)
 
 def main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
@@ -114,7 +92,7 @@ def main():
     br_parser.Component(name=args.input_name, version=args.component_version,
                         type='firmware', author="Acme Inc")
 
-    create_json_from_sbom(args, br_parser)
+    create_buildroot_sbom(args, br_parser)
 
     from cyclonedx.model.bom import Bom
     bom = Bom.from_parser(parser=br_parser)
@@ -123,6 +101,8 @@ def main():
     outputter: BaseOutput = get_instance(bom=bom, output_format=OutputFormat.JSON)
     bom_json: str = outputter.output_as_string()
     print(bom_json)
-
+    outputfile = open(args.output_file, mode='w')
+    json.dump(json.loads(bom_json), outputfile, indent=3)
+    outputfile.close()
 
 main()
