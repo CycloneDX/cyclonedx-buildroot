@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 # Copyright (c) Steve Springett. All Rights Reserved.
-# Copyright (c) 2020 Alvin Chen. All Rights Reserved.
-# the main reason of change here is to generate an import-able bom.xml for dependency-track
+# Copyright (c) 2023 OWASP Foundation. All Rights Reserved.
+
 
 import argparse
 from typing import Any
