@@ -26,6 +26,10 @@ import csv
 import json
 
 import cyclonedx.parser
+import cyclonedx.model
+
+br_parser = cyclonedx.parser
+
 
 # Support XML and JSON
 # Support BOM serial number
@@ -50,7 +54,7 @@ import cyclonedx.parser
 # DEPENDENCIES WITH LICENSES skeleton-init-common [unknown] skeleton-init-systemd [unknown] toolchain-external-laird-arm [unknown] (many)
 #
 
-def create_json_from_sbom(args, br_parser):
+def create_json_from_sbom(args, parser: br_parser):
     #
     # Insert the CycloneDX BOM_Metadata
     thejson = {"bomFormat": "CycloneDX", "specVersion": "1.4", "version": 1,
@@ -58,8 +62,7 @@ def create_json_from_sbom(args, br_parser):
                             "component": {"type": "firmware",
                                           "name": args.input_name,
                                           "version": args.component_version}}}
-    # TODO add serialNumber
-    #
+
     # Capture the components that describe the complete inventory of first-party software
     final_component_details = list("")
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
@@ -68,7 +71,7 @@ def create_json_from_sbom(args, br_parser):
         sheetX = csv.DictReader(csvfile)
         for row in sheetX:
             try:
-                purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "-" + row['VERSION'] + \
+                purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
                                        "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
                 license_list_info = list("")
                 set_of_license_info = {"expression": row['LICENSE']}
@@ -80,12 +83,15 @@ def create_json_from_sbom(args, br_parser):
                 component_license = cyclonedx.model.License(name=row['LICENSE'])
                 component_license_choice: object = cyclonedx.model.LicenseChoice(license=component_license)
 
-                next_component=cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                   type='firmware',
-                                                                   purl=purl_info,
-                                                                   licenses=[component_license_choice],
-                                                                   version=row['VERSION'])
-                br_parser.components.add(next_component)
+                from packageurl import PackageURL
+                purl = PackageURL.from_string(purl_info)
+                componenttype = cyclonedx.model.component.ComponentType('firmware')
+                next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
+                                                                     type=componenttype,
+                                                                     purl=purl,
+                                                                     licenses=[component_license_choice],
+                                                                     version=row['VERSION'])
+                br_parser.BaseParser._components.append(next_component)
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
                 print(
@@ -94,12 +100,8 @@ def create_json_from_sbom(args, br_parser):
                 print("Cannot continue with the provided input file. Exiting.")
                 exit(-1)
     thejson["components"] = final_component_details
-    outputfile = open(args.output_file, mode='w')
-    json.dump(thejson, outputfile, indent=3)
-    print("br_parser.component")
-    print(br_parser.components)
-    print("br_parser.component")
-
+    #outputfile = open(args.output_file, mode='w')
+    #json.dump(thejson, outputfile, indent=3)
 
 def main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
@@ -118,16 +120,19 @@ def main():
     print('SBOM Component Name: ' + args.input_name)
     print('SBOM Component Version: ' + args.component_version)
 
-    #myBom = Bom()
-    #myBomMeta = myBom.metadata
-    #myBomMeta.component = {"type": "firmware", "name": args.input_name,"version": args.component_version}
-    #myBomMeta.manufacture = "Acme Inc"
-    #myBomMeta.supplier = "Acme Inc"
-
-    br_parser = cyclonedx.parser.Component(name=args.input_name,version=args.component_version,
-                                           type='firmware',author="Acme Inc", )
+    # TODO update the author field to copy from the cli
+    br_parser.Component(name=args.input_name, version=args.component_version,
+                        type='firmware', author="Acme Inc")
 
     create_json_from_sbom(args, br_parser)
+
+    from cyclonedx.model.bom import Bom
+    bom = Bom.from_parser(parser=br_parser)
+
+    from cyclonedx.output import get_instance, BaseOutput, OutputFormat
+    outputter: BaseOutput = get_instance(bom=bom, output_format=OutputFormat.JSON)
+    bom_json: str = outputter.output_as_string()
+    print(bom_json)
 
 
 main()
