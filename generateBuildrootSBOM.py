@@ -27,7 +27,8 @@ from typing import Any
 import cyclonedx.model
 import cyclonedx.parser
 
-br_parser = cyclonedx.parser
+# br_parser = cyclonedx.parser
+br_parser = cyclonedx.parser.BaseParser
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -56,17 +57,19 @@ def create_buildroot_sbom(args, parser: br_parser):
                                             "licenses": license_list_info, "purl": purl_info}
                 final_component_details.append(set_of_component_details)
 
-                component_license = cyclonedx.model.License(name=row['LICENSE'])
-                component_license_choice: object = cyclonedx.model.LicenseChoice(license=component_license)
+                component_license = cyclonedx.model.License(license_name=row['LICENSE'])
+                component_license_choice: object = cyclonedx.model.LicenseChoice(license_expression=component_license)
 
                 from packageurl import PackageURL
                 purl = PackageURL.from_string(purl_info)
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
-                next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                     type=componenttype,
-                                                                     purl=purl,
-                                                                     licenses=[component_license_choice],
-                                                                     version=row['VERSION'])
+
+                next_component = cyclonedx.parser.Component(name=row['PACKAGE'],
+                                                           component_type=componenttype,
+                                                           purl=purl,
+                                                           licenses=[component_license_choice],
+                                                           version=row['VERSION'])
+
                 br_parser.BaseParser._components.append(next_component)
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
@@ -91,7 +94,7 @@ def main():
 
     # TODO update the author field to copy from the cli
     br_parser.Component(name=args.input_name, version=args.component_version,
-                        type='firmware', author="Acme Inc")
+                        component_type='firmware', author="Acme Inc")
 
     create_buildroot_sbom(args, br_parser)
 

@@ -9,9 +9,12 @@
 
 # CycloneDX Buildroot
 
-This [Buildroot][Buildroot_homepage] plugin generates [CycloneDX][CDX_homepage] Software Bill of Materials (SBOM) containing all direct and transitive dependencies of a buildroot project.  
-OWASP CycloneDX is a full-stack Bill of Materials (BOM) standard that provides advanced supply chain capabilities for cyber risk reduction.
-Buildroot provides a build target named "legal-info" which produces a set of files including manifest.csv.
+This [Buildroot][Buildroot_homepage] python application generates [CycloneDX][CDX_homepage] Software Bill of Materials 
+(SBOM) containing all direct dependencies of a Buildroot generated project.  
+OWASP CycloneDX is a full-stack Bill of Materials (BOM) standard that provides advanced supply chain capabilities for 
+cyber risk reduction.
+Buildroot provides a build target named "legal-info" which produces a set of files including manifest.csv. The legal-info
+is a general "make" target for a Buildroot project.
 
 ## Usage
 
@@ -22,7 +25,7 @@ This can be overwritten as follows:
 ```ShellSession
 
   
-$ python3 -m cyclonedxbuildroot.cli.generateBom -it buildroot -i <path>/manifest.csv -ot console -n "My Project" -v "1.2.3.4"
+$ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.2.3.4"
       Usage:  generateBom.cli [OPTIONS]
       Options:
         -i <path> - the alternate filename to a frozen manifest.csv
