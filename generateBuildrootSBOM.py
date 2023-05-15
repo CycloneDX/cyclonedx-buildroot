@@ -20,15 +20,13 @@
 
 
 import argparse
+from typing import Any
 import csv
 import json
-from typing import Any
-
-import cyclonedx.model
 import cyclonedx.parser
+import cyclonedx.model
 
-# br_parser = cyclonedx.parser
-br_parser = cyclonedx.parser.BaseParser
+br_parser = cyclonedx.parser
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -43,7 +41,7 @@ def create_buildroot_sbom(args, parser: br_parser):
     # Capture the components that describe the complete inventory of first-party software
     final_component_details = list("")
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
-    # the resulting JSON. Catch issues using a try/except block to help with run time issues.
+    # the resulting JSON. Thus a try/except block to help with run time issues.
     with open(args.input_file, newline='') as csvfile:
         sheetX = csv.DictReader(csvfile)
         for row in sheetX:
@@ -57,19 +55,17 @@ def create_buildroot_sbom(args, parser: br_parser):
                                             "licenses": license_list_info, "purl": purl_info}
                 final_component_details.append(set_of_component_details)
 
-                component_license = cyclonedx.model.License(license_name=row['LICENSE'])
-                component_license_choice: object = cyclonedx.model.LicenseChoice(license_expression=component_license)
+                component_license = cyclonedx.model.License(name=row['LICENSE'])
+                component_license_choice: object = cyclonedx.model.LicenseChoice(license=component_license)
 
                 from packageurl import PackageURL
                 purl = PackageURL.from_string(purl_info)
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
-
-                next_component = cyclonedx.parser.Component(name=row['PACKAGE'],
-                                                           component_type=componenttype,
-                                                           purl=purl,
-                                                           licenses=[component_license_choice],
-                                                           version=row['VERSION'])
-
+                next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
+                                                                     type=componenttype,
+                                                                     purl=purl,
+                                                                     licenses=[component_license_choice],
+                                                                     version=row['VERSION'])
                 br_parser.BaseParser._components.append(next_component)
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
@@ -94,7 +90,7 @@ def main():
 
     # TODO update the author field to copy from the cli
     br_parser.Component(name=args.input_name, version=args.component_version,
-                        component_type='firmware', author="Acme Inc")
+                        type='firmware', author="Acme Inc")
 
     create_buildroot_sbom(args, br_parser)
 
@@ -103,7 +99,7 @@ def main():
     bom = Bom.from_parser(parser=br_parser)
 
     # Produce the output in pretty JSON format.
-    from cyclonedx.output import BaseOutput, OutputFormat, get_instance
+    from cyclonedx.output import get_instance, BaseOutput, OutputFormat
     outputter: BaseOutput = get_instance(bom=bom, output_format=OutputFormat.JSON)
     bom_json: str = outputter.output_as_string()
     outputfile = open((args.output_file + ".json"), mode='w')
@@ -112,7 +108,7 @@ def main():
 
     # Produce the output in XML format.
     outputterXML: BaseOutput = get_instance(bom=bom, output_format=OutputFormat.XML)
-    outputterXML.output_to_file(filename=(args.output_file + ".onexml"), allow_overwrite=True)
+    bom_xml: str = outputterXML.output_to_file(filename=(args.output_file + ".onexml"), allow_overwrite=True)
 
     from xml.dom import minidom
     myxmldoc = minidom.parseString(open((args.output_file + ".onexml")).read())
