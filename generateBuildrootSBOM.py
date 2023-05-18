@@ -23,10 +23,9 @@ import argparse
 from typing import Any
 import csv
 import json
-import cyclonedx.parser
-import cyclonedx.model
+import cyclonedx.model.bom
 
-br_parser = cyclonedx.parser
+br_bom = cyclonedx.model.bom.Bom
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -36,7 +35,7 @@ br_parser = cyclonedx.parser
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
 
-def create_buildroot_sbom(args, parser: br_parser):
+def create_buildroot_sbom(args, bom: br_bom):
     #
     # Capture the components that describe the complete inventory of first-party software
     final_component_details = list("")
@@ -54,19 +53,15 @@ def create_buildroot_sbom(args, parser: br_parser):
                 set_of_component_details = {"type": "library", "name": row['PACKAGE'], "version": row['VERSION'],
                                             "licenses": license_list_info, "purl": purl_info}
                 final_component_details.append(set_of_component_details)
-
-                component_license = cyclonedx.model.License(name=row['LICENSE'])
-                component_license_choice: object = cyclonedx.model.LicenseChoice(license=component_license)
-
                 from packageurl import PackageURL
                 purl = PackageURL.from_string(purl_info)
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                     type=componenttype,
+                                                                     component_type=componenttype,
                                                                      purl=purl,
-                                                                     licenses=[component_license_choice],
+                                                                     licenses=row['LICENSE'],
                                                                      version=row['VERSION'])
-                br_parser.BaseParser._components.append(next_component)
+                br_bom.add_component(next_component) #  parser.BaseParser._components.append(next_component)
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
                 print(
@@ -89,10 +84,11 @@ def main():
     print('SBOM Component Version: ' + args.component_version)
 
     # TODO update the author field to copy from the cli
-    br_parser.Component(name=args.input_name, version=args.component_version,
-                        type='firmware', author="Acme Inc")
-
-    create_buildroot_sbom(args, br_parser)
+    br_bom_Component = cyclonedx.model.bom.Component
+    br_bom_Component(name="component name", version="1234", author="author",license_str="license",component_type='firmware')
+    br_bom_Bom = cyclonedx.model.bom.Bom()
+    br_bom_Bom.add_component(component=br_bom_Component)
+    create_buildroot_sbom(args, br_bom)
 
     # Make the full BOM
     from cyclonedx.model.bom import Bom
