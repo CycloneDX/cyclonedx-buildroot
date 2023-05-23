@@ -44,7 +44,6 @@ def create_buildroot_sbom(args, br_bom):
         sheetX = csv.DictReader(csvfile)
         for row in sheetX:
             try:
-                # TODO get the package URL working
                 purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
                                        "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
 
@@ -53,7 +52,7 @@ def create_buildroot_sbom(args, br_bom):
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
                                                                      component_type=componenttype,
-                                                                     # package_url_type=PackageURL.from_string(purl_info),
+                                                                     package_url_type=purl_info,
                                                                      license_str=row['LICENSE'],
                                                                      version=row['VERSION'])
                 br_bom_local.add_component(component=next_component)
@@ -83,11 +82,11 @@ def main():
     print('SBOM Component Version: ' + args.component_version)
 
     # TODO component type value processing
-    #  br_bom_Component = cyclonedx.model.bom.Component
+    # br_bom_Component = cyclonedx.model.bom.Component
     # from cyclonedx.model.component import ComponentType
     # componenttype = cyclonedx.model.component.ComponentType('firmware')
     # TODO update the author field to copy from the cli
-    # TODO br_bom_Component(name="component name", version="1234", author="author", license_str="license",
+    # br_bom_Component(name="component name", version="1234", author="author", license_str="license",
     #                 component_type=componenttype)
     # TODO determine if we need both a br_bom and a new_bom
     br_bom = cyclonedx.model.bom.Bom()
