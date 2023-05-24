@@ -71,7 +71,7 @@ def create_buildroot_sbom(args, br_bom):
 def main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv')
-    parser.add_argument('-o', action='store', dest='output_file', default='export')
+    parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom')
     parser.add_argument('-n', action='store', dest='input_name', default='unknown')
     parser.add_argument('-v', action='store', dest='component_version', default='unknown')
 
@@ -81,13 +81,13 @@ def main():
     print('SBOM Component Name: ' + args.input_name)
     print('SBOM Component Version: ' + args.component_version)
 
-    # TODO component type value processing
-    # br_bom_Component = cyclonedx.model.bom.Component
-    # from cyclonedx.model.component import ComponentType
-    # componenttype = cyclonedx.model.component.ComponentType('firmware')
-    # TODO update the author field to copy from the cli
-    # br_bom_Component(name="component name", version="1234", author="author", license_str="license",
-    #                 component_type=componenttype)
+    # TODO provide a way to specify the meta data of this BOM to include info from bom-1.3.schema
+    # which should be managed by cyclonedx.model.bom.BomMetaData() but apparently not yet ready
+    # authors
+    # component
+    # manufacture
+    # license
+
     # TODO determine if we need both a br_bom and a new_bom
     br_bom = cyclonedx.model.bom.Bom()
     new_bom = create_buildroot_sbom(args, br_bom)
