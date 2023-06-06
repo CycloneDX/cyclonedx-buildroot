@@ -20,11 +20,11 @@
 
 
 import argparse
-from typing import Any
 import csv
 import json
-import cyclonedx.model.bom
+from typing import Any
 
+import cyclonedx.model.bom
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -33,29 +33,35 @@ import cyclonedx.model.bom
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
+from cyclonedx.model.component import ComponentType
+
 
 def create_buildroot_sbom(args, br_bom):
-    br_bom_local = br_bom
+    br_bom_local: cyclonedx.model.bom = br_bom
     #
     # Capture the components that describe the complete inventory of first-party software
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
     # the resulting JSON. Use a try/except block to help with run time issues.
     with open(args.input_file, newline='') as csvfile:
         sheetX = csv.DictReader(csvfile)
+        my_component_list = []
         for row in sheetX:
             try:
                 purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
                                        "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
 
                 from packageurl import PackageURL
-                from cyclonedx.model.component import ComponentType
+
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                     component_type=componenttype,
-                                                                     package_url_type=purl_info,
+                                                                     type=componenttype,
+                                                                     # component_type=componenttype,
+                                                                     # package_url_type=purl_info,
+                                                                     # purl=purl_info,
                                                                      license_str=row['LICENSE'],
                                                                      version=row['VERSION'])
-                br_bom_local.add_component(component=next_component)
+                my_component_list.append(next_component)
+                br_bom_local.components.add(next_component)
 
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
@@ -81,7 +87,7 @@ def main():
     print('SBOM Component Name: ' + args.input_name)
     print('SBOM Component Version: ' + args.component_version)
 
-    # TODO provide a way to specify the meta data of this BOM to include info from bom-1.3.schema
+    # TODO provide a way to specify the meta data of this BOM using cyclonedx-python-lib v4.0.0 schema
     # which should be managed by cyclonedx.model.bom.BomMetaData() but apparently not yet ready
     # authors
     # component
@@ -89,6 +95,7 @@ def main():
     # license
 
     # TODO determine if we need both a br_bom and a new_bom
+    from cyclonedx.model.bom import Bom
     br_bom = cyclonedx.model.bom.Bom()
     new_bom = create_buildroot_sbom(args, br_bom)
 
