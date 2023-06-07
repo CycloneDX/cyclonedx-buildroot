@@ -22,9 +22,9 @@
 import argparse
 import csv
 import json
-from typing import Any
 
 import cyclonedx.model.bom
+from cyclonedx.model import LicenseChoice
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -44,23 +44,24 @@ def create_buildroot_sbom(args, br_bom):
     # the resulting JSON. Use a try/except block to help with run time issues.
     with open(args.input_file, newline='') as csvfile:
         sheetX = csv.DictReader(csvfile)
-        my_component_list = []
+
         for row in sheetX:
             try:
-                purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
-                                       "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
+                # purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
+                #                       "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
 
                 from packageurl import PackageURL
 
+                purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
+                                       qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
+
                 componenttype = cyclonedx.model.component.ComponentType('firmware')
+                this_component_license = [LicenseChoice(expression=(row['LICENSE']))]
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
                                                                      type=componenttype,
-                                                                     # component_type=componenttype,
-                                                                     # package_url_type=purl_info,
-                                                                     # purl=purl_info,
-                                                                     license_str=row['LICENSE'],
-                                                                     version=row['VERSION'])
-                my_component_list.append(next_component)
+                                                                     licenses=this_component_license,
+                                                                     version=row['VERSION'],
+                                                                     purl=purl_info)
                 br_bom_local.components.add(next_component)
 
             except KeyError:
@@ -95,7 +96,7 @@ def main():
     # license
 
     # TODO determine if we need both a br_bom and a new_bom
-    from cyclonedx.model.bom import Bom
+
     br_bom = cyclonedx.model.bom.Bom()
     new_bom = create_buildroot_sbom(args, br_bom)
 
