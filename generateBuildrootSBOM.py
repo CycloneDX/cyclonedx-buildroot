@@ -24,7 +24,6 @@ import csv
 import json
 
 import cyclonedx.model.bom
-from cyclonedx.model import LicenseChoice
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -36,7 +35,7 @@ from cyclonedx.model import LicenseChoice
 from cyclonedx.model.component import ComponentType
 
 
-def create_buildroot_sbom(args, br_bom):
+def create_buildroot_sbom(args, br_bom: cyclonedx.model.bom):
     br_bom_local: cyclonedx.model.bom = br_bom
     #
     # Capture the components that describe the complete inventory of first-party software
@@ -47,19 +46,17 @@ def create_buildroot_sbom(args, br_bom):
 
         for row in sheetX:
             try:
-                # purl_info: str | Any = "pkg:generic/" + row['PACKAGE'] + "@" + row['VERSION'] + \
-                #                       "?download_url=" + row['SOURCE SITE'] + row['SOURCE ARCHIVE']
-
                 from packageurl import PackageURL
+                from cyclonedx.factory.license import LicenseFactory
 
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
 
-                componenttype = cyclonedx.model.component.ComponentType('firmware')
-                this_component_license = [LicenseChoice(expression=(row['LICENSE']))]
+                componenttype = cyclonedx.model.component.ComponentType.FIRMWARE
+                lfac = LicenseFactory()
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
                                                                      type=componenttype,
-                                                                     licenses=this_component_license,
+                                                                     licenses=[lfac.make_from_string(row['LICENSE'])],
                                                                      version=row['VERSION'],
                                                                      purl=purl_info)
                 br_bom_local.components.add(next_component)
