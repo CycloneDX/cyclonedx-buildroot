@@ -23,7 +23,9 @@ import argparse
 import csv
 import json
 
-import cyclonedx.model.bom
+import cyclonedx
+from cyclonedx.model.bom import Bom, BomMetaData
+from cyclonedx.model.component import Component
 
 # TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
@@ -32,11 +34,10 @@ import cyclonedx.model.bom
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
-from cyclonedx.model.component import ComponentType
 
 
-def create_buildroot_sbom(args, br_bom: cyclonedx.model.bom):
-    br_bom_local: cyclonedx.model.bom = br_bom
+def create_buildroot_sbom(args, br_bom: Bom):
+    br_bom_local: Bom = br_bom
     #
     # Capture the components that describe the complete inventory of first-party software
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
@@ -86,16 +87,18 @@ def main():
     print('SBOM Component Version: ' + args.component_version)
 
     # TODO provide a way to specify the meta data of this BOM using cyclonedx-python-lib v4.0.0 schema
-    # which should be managed by cyclonedx.model.bom.BomMetaData() but apparently not yet ready
+    # need support to provide the user with the ability to specify the following for this BOM
     # authors
     # component
     # manufacture
     # license
 
-    # TODO determine if we need both a br_bom and a new_bom
-
-    br_bom = cyclonedx.model.bom.Bom()
+    br_bom = Bom()
     new_bom = create_buildroot_sbom(args, br_bom)
+    from cyclonedx.model import OrganizationalEntity
+    br_meta = BomMetaData(manufacture=OrganizationalEntity(name="Acme Inc"))
+    new_bom.metadata = br_meta
+    new_bom.version = args.component_version
 
     # Produce the output in pretty JSON format.
     from cyclonedx.output import get_instance, BaseOutput, OutputFormat
@@ -105,10 +108,11 @@ def main():
     json.dump(json.loads(bom_json), outputfile, indent=3)
     outputfile.close()
 
-    # Produce the output in XML format.
+    # Produce the output in XML format that is in a one-line format.
     outputterXML: BaseOutput(bom=new_bom) = get_instance(bom=new_bom, output_format=OutputFormat.XML)
     outputterXML.output_to_file(filename=(args.output_file + ".onexml"), allow_overwrite=True)
 
+    # Produce the output in XML format that is indented format.
     from xml.dom import minidom
     myxmldoc = minidom.parseString(open((args.output_file + ".onexml")).read())
     outputfile = open(args.output_file + ".xml", mode='w')
