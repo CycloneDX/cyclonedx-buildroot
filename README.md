@@ -32,6 +32,7 @@ $ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.
         -o <path> - the bom file to create
         -n name of the project or product SBOM <project name in quotes>
         -v your product SBOM version <project version in quotes>
+        -m SBOM manufacturer name
 ```
 
 ## CycloneDX Schema Support
