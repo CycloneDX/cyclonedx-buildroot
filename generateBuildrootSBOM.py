@@ -22,7 +22,7 @@ import argparse
 import csv
 import json
 
-import cyclonedx
+import cyclonedx  # TODO remove this top level import to only use the imports below
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
@@ -32,7 +32,6 @@ from cyclonedx.output import get_instance, BaseOutput, OutputFormat
 from xml.dom import minidom
 
 
-# TODO Support component assemblies (if applicable to buildroot)
 # TODO Support component dependencies
 # TODO Support metadata\tools, metadata\component (if applicable), and any other metadata object or property
 
@@ -79,37 +78,32 @@ def my_main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv')
     parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom')
-    parser.add_argument('-n', action='store', dest='input_name', default='unknown')
-    parser.add_argument('-v', action='store', dest='component_version', default='unknown')
+    parser.add_argument('-n', action='store', dest='product_name', default='unknown')
+    parser.add_argument('-v', action='store', dest='product_version', default='unknown')
+    parser.add_argument('-m', action='store', dest='manufacturer_name', default='unknown')
 
     args = parser.parse_args()
     print('Buildroot manifest input file: ' + args.input_file)
     print('Output SBOM: ' + args.output_file)
-    print('SBOM Component Name: ' + args.input_name)
-    print('SBOM Component Version: ' + args.component_version)
+    print('SBOM Product Name: ' + args.manufacturer_name)
+    print('SBOM Product Version: ' + args.product_version)
+    print('SBOM Product Manufacturer: ' + args.manufacturer_name)
 
-    # TODO provide a way to specify the metadata of this BOM using cyclonedx-python-lib v4.0.0 schema
-    # need support to provide the user with the ability to specify the following for this BOM
-    # authors
-    # component
-    # manufacture
-    # license
-
-    br_bom = Bom()
-    new_bom = create_buildroot_sbom(args.input_file, br_bom)
-    br_meta = BomMetaData(manufacture=OrganizationalEntity(name="Acme Inc"))
-    new_bom.metadata = br_meta
-    new_bom.version = args.component_version
+    br_bom = create_buildroot_sbom(args.input_file, Bom())
+    br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
+                          component=cyclonedx.model.component.Component(name=args.product_name,
+                                                                        version=args.product_version))
+    br_bom.metadata = br_meta
 
     # Produce the output in pretty JSON format.
-    outputter: BaseOutput(bom=new_bom) = get_instance(bom=new_bom, output_format=OutputFormat.JSON)
+    outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
     bom_json = outputter.output_as_string()
     outputfile = open((args.output_file + ".json"), mode='w')
     json.dump(json.loads(bom_json), outputfile, indent=3)
     outputfile.close()
 
     # Produce the output in XML format that is in a one-line format.
-    outputterXML: BaseOutput(bom=new_bom) = get_instance(bom=new_bom, output_format=OutputFormat.XML)
+    outputterXML: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.XML)
     outputterXML.output_to_file(filename=(args.output_file + ".onexml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
@@ -119,10 +113,6 @@ def my_main():
     outputfile.close()
 
 
-# main()
-
-
 if __name__ == "__main__":
-    import sys
 
     my_main()
