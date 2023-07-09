@@ -54,15 +54,15 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
 
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
-                componenttype = cyclonedx.model.component.ComponentType.FIRMWARE
                 lfac = LicenseFactory()
                 next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                     type=componenttype,
+                                                                     type=ComponentType.FIRMWARE,
                                                                      licenses=[lfac.make_from_string(row['LICENSE'])],
                                                                      version=row['VERSION'],
-                                                                     purl=purl_info)
+                                                                     purl=purl_info,
+                                                                     bom_ref=row['PACKAGE'])
                 br_bom_local.components.add(next_component)
-
+                br_bom_local.register_dependency(br_bom.metadata.component, [next_component])
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
                 print(
@@ -89,11 +89,14 @@ def my_main():
     print('SBOM Product Version: ' + args.product_version)
     print('SBOM Product Manufacturer: ' + args.manufacturer_name)
 
-    br_bom = create_buildroot_sbom(args.input_file, Bom())
+    br_bom = Bom()
     br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
                           component=cyclonedx.model.component.Component(name=args.product_name,
-                                                                        version=args.product_version))
+                                                                        version=args.product_version,
+                                                                        bom_ref=args.product_name))
     br_bom.metadata = br_meta
+
+    br_bom = create_buildroot_sbom(args.input_file, br_bom)
 
     # Produce the output in pretty JSON format.
     outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
@@ -104,10 +107,10 @@ def my_main():
 
     # Produce the output in XML format that is in a one-line format.
     outputterXML: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.XML)
-    outputterXML.output_to_file(filename=(args.output_file + ".onexml"), allow_overwrite=True)
+    outputterXML.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
-    myxmldoc = minidom.parseString(open((args.output_file + ".onexml")).read())
+    myxmldoc = minidom.parseString(open((args.output_file + ".one.xml")).read())
     outputfile = open(args.output_file + ".xml", mode='w')
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
