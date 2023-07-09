@@ -1,0 +1,4 @@
+PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
+linux,custom,GPL-2.0,COPYING,linux-custom.tar.xz,https://cdn.kernel.org/pub/linux/kernel/vcustom.x,skeleton-init-common [unknown] skeleton-init-systemd [unknown] toolchain-external-laird-arm [unknown]
+uboot,custom,GPL-2.0+,,u-boot-custom.tar.bz2,ftp://ftp.denx.de/pub/u-boot,skeleton-init-common [unknown] skeleton-init-systemd [unknown] toolchain-external-laird-arm [unknown]
+
