@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# This file is part of CycloneDX Python module.
+# This file is part of CycloneDX Buildroot module.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Copyright (c) Steve Springett. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2023 OWASP Foundation. All Rights Reserved.
-
 
 import argparse
 import csv
 import json
-
-import cyclonedx  # TODO remove this top level import to only use the imports below
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
@@ -38,8 +35,6 @@ from xml.dom import minidom
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
-
-
 def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
     br_bom_local: Bom = br_bom
     #
@@ -55,12 +50,14 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
                 lfac = LicenseFactory()
-                next_component = cyclonedx.model.component.Component(name=row['PACKAGE'],
-                                                                     type=ComponentType.FIRMWARE,
-                                                                     licenses=[lfac.make_from_string(row['LICENSE'])],
-                                                                     version=row['VERSION'],
-                                                                     purl=purl_info,
-                                                                     bom_ref=row['PACKAGE'])
+
+                next_component = Component(name=row['PACKAGE'],
+                                           type=ComponentType.FIRMWARE,
+                                           licenses=[lfac.make_from_string(row['LICENSE'])],
+                                           version=row['VERSION'],
+                                           purl=purl_info,
+                                           bom_ref=row['PACKAGE'])
+
                 br_bom_local.components.add(next_component)
                 br_bom_local.register_dependency(br_bom.metadata.component, [next_component])
             except KeyError:
@@ -76,13 +73,17 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
 
 def my_main():
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
-    parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv')
-    parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom')
-    parser.add_argument('-n', action='store', dest='product_name', default='unknown')
-    parser.add_argument('-v', action='store', dest='product_version', default='unknown')
-    parser.add_argument('-m', action='store', dest='manufacturer_name', default='unknown')
+    parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv',
+                        help='comma separated value (csv) file of buildroot manifest data')
+    parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom',
+                        help='SBOM output file name for json and xml')
+    parser.add_argument('-n', action='store', dest='product_name', default='unknown', help='name of the product')
+    parser.add_argument('-v', action='store', dest='product_version', default='unknown', help='product version string')
+    parser.add_argument('-m', action='store', dest='manufacturer_name', default='unknown',
+                        help='name of product manufacturer')
 
     args = parser.parse_args()
+
     print('Buildroot manifest input file: ' + args.input_file)
     print('Output SBOM: ' + args.output_file)
     print('SBOM Product Name: ' + args.manufacturer_name)
@@ -90,10 +91,11 @@ def my_main():
     print('SBOM Product Manufacturer: ' + args.manufacturer_name)
 
     br_bom = Bom()
+    br_bom.metadata.component = rootComponent = Component(name=args.product_name,
+                                                          version=args.product_version,
+                                                          bom_ref=args.product_name)
     br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
-                          component=cyclonedx.model.component.Component(name=args.product_name,
-                                                                        version=args.product_version,
-                                                                        bom_ref=args.product_name))
+                          component=rootComponent)
     br_bom.metadata = br_meta
 
     br_bom = create_buildroot_sbom(args.input_file, br_bom)
@@ -117,5 +119,4 @@ def my_main():
 
 
 if __name__ == "__main__":
-
     my_main()
