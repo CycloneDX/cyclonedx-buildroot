@@ -20,6 +20,8 @@
 import argparse
 import csv
 import json
+import sys
+
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
@@ -28,9 +30,6 @@ from cyclonedx.model import OrganizationalEntity
 from cyclonedx.output import get_instance, BaseOutput, OutputFormat
 from xml.dom import minidom
 
-
-# TODO Support component dependencies
-# TODO Support metadata\tools, metadata\component (if applicable), and any other metadata object or property
 
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
@@ -71,7 +70,7 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
     return br_bom_local
 
 
-def my_main():
+def my_main(*args):
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv',
                         help='comma separated value (csv) file of buildroot manifest data')
@@ -81,8 +80,11 @@ def my_main():
     parser.add_argument('-v', action='store', dest='product_version', default='unknown', help='product version string')
     parser.add_argument('-m', action='store', dest='manufacturer_name', default='unknown',
                         help='name of product manufacturer')
-
-    args = parser.parse_args()
+    if (len(args) != 0):
+        unittest_args = list(args)
+        args = parser.parse_args(list(args))
+    else:
+        args = parser.parse_args()
 
     print('Buildroot manifest input file: ' + args.input_file)
     print('Output SBOM: ' + args.output_file)
@@ -98,7 +100,7 @@ def my_main():
                           component=rootComponent)
     br_bom.metadata = br_meta
 
-    br_bom = create_buildroot_sbom(args.input_file, br_bom)
+    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
     outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
@@ -112,11 +114,12 @@ def my_main():
     outputterXML.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
-    myxmldoc = minidom.parseString(open((args.output_file + ".one.xml")).read())
+    myxmldocfile = open((args.output_file + ".one.xml"))
+    myxmldoc = minidom.parseString(myxmldocfile.read())
     outputfile = open(args.output_file + ".xml", mode='w')
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
-
+    myxmldocfile.close()
 
 if __name__ == "__main__":
     my_main()
