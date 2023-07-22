@@ -20,7 +20,6 @@
 import argparse
 import csv
 import json
-import sys
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
