@@ -20,7 +20,6 @@
 import argparse
 import csv
 import json
-import sys
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
@@ -45,16 +44,17 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
 
         for row in sheetX:
             try:
-
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
                 lfac = LicenseFactory()
-
+                cpe_id_value = "unknown"
+                cpe_id_value = get_cpe_value(row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
                                            type=ComponentType.FIRMWARE,
                                            licenses=[lfac.make_from_string(row['LICENSE'])],
                                            version=row['VERSION'],
                                            purl=purl_info,
+                                           cpe=cpe_id_value,
                                            bom_ref=row['PACKAGE'])
 
                 br_bom_local.components.add(next_component)
@@ -68,6 +68,35 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
                 exit(-1)
 
     return br_bom_local
+
+
+# From the cpe.json file iterate across the list of components
+# For each component in the br_bom search the cpe file for a matching component by comparing
+# either bom-ref or name field. Once a match is found from the cpe file copy the name value
+# pair of the cpe-id field replacing the purl filed in br_bom.
+# input : name of the software component
+# output: returns the cpe value
+def get_cpe_value(sw_component_name: str):
+    retval = "not found"
+    #print("get_cpe_value input name ", sw_component_name)
+    cpe_file = open("cpe/cpe_data_pp.json")
+    cpe_data = dict(json.load(cpe_file))
+    for cpe_key, cpe_value in cpe_data.items():
+        try:
+            sw_object = dict(cpe_data[cpe_key])
+            #print("sw_object name", sw_object['name'])
+            if (sw_object['name'] == sw_component_name):
+                x = sw_object.items()
+                retval = sw_object['cpe-id']
+                #print("FOUND IT")
+        except:
+            #print("some error here")
+            cpe_file.close()
+            return retval
+
+    cpe_file.close()
+
+    return retval
 
 
 def my_main(*args):
@@ -99,7 +128,6 @@ def my_main(*args):
     br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
                           component=rootComponent)
     br_bom.metadata = br_meta
-
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
@@ -120,6 +148,7 @@ def my_main(*args):
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
     myxmldocfile.close()
+
 
 if __name__ == "__main__":
     my_main()
