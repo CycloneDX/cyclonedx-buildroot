@@ -78,24 +78,21 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
 # output: returns the cpe value
 def get_cpe_value(sw_component_name: str):
     retval = "not found"
-    #print("get_cpe_value input name ", sw_component_name)
     cpe_file = open("cpe/cpe_data_pp.json")
     cpe_data = dict(json.load(cpe_file))
     for cpe_key, cpe_value in cpe_data.items():
         try:
             sw_object = dict(cpe_data[cpe_key])
-            #print("sw_object name", sw_object['name'])
             if (sw_object['name'] == sw_component_name):
                 x = sw_object.items()
                 retval = sw_object['cpe-id']
-                #print("FOUND IT")
-        except:
-            #print("some error here")
-            cpe_file.close()
-            return retval
+                cpe_file.close()
+                return retval
+
+        except: # Some entries do not have a "name" key and no "cpe-id" so skip these.
+            pass
 
     cpe_file.close()
-
     return retval
 
 
