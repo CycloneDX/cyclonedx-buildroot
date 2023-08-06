@@ -1,0 +1,1261 @@
+{
+    "busybox": {
+        "type": "target",
+        "name": "busybox",
+        "virtual": false,
+        "version": "1.36.1",
+        "licenses": "GPL-2.0, bzip2-1.0.4",
+        "dl_dir": "busybox",
+        "downloads": [
+            {
+                "source": "busybox-1.36.1.tar.bz2",
+                "uris": [
+                    "https+https://www.busybox.net/downloads",
+                    "http|urlencode+http://sources.buildroot.net/busybox",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/busybox-1.36.1",
+        "source_dir": "output/build/busybox-1.36.1",
+        "build_dir": "output/build/busybox-1.36.1/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:busybox:busybox:1.36.1:*:*:*:*:*:*:*",
+        "ignore_cves": [
+            "CVE-2022-28391"
+        ]
+    },
+    "glibc": {
+        "type": "target",
+        "name": "glibc",
+        "virtual": false,
+        "version": "2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c",
+        "licenses": "GPL-2.0+ (programs), LGPL-2.1+, BSD-3-Clause, MIT (library)",
+        "dl_dir": "glibc",
+        "downloads": [
+            {
+                "source": "glibc-2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c.tar.gz",
+                "uris": [
+                    "https+https://github.com/bminor/glibc/archive/2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c",
+                    "http|urlencode+http://sources.buildroot.net/glibc",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/glibc-2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c",
+        "source_dir": "output/build/glibc-2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c",
+        "build_dir": "output/build/glibc-2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c/build",
+        "install_target": true,
+        "install_staging": true,
+        "install_images": false,
+        "dependencies": [
+            "host-bison",
+            "host-gawk",
+            "host-gcc-initial",
+            "host-skeleton",
+            "linux-headers",
+            "skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gnu:glibc:2.36-81-g4f4d7a13edfd2fdc57c9d76e1fd6d017fb47550c:*:*:*:*:*:*:*"
+    },
+    "host-acl": {
+        "type": "host",
+        "name": "acl",
+        "virtual": false,
+        "version": "2.3.1",
+        "licenses": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+        "dl_dir": "acl",
+        "downloads": [
+            {
+                "source": "acl-2.3.1.tar.xz",
+                "uris": [
+                    "http+http://download.savannah.gnu.org/releases/acl",
+                    "http|urlencode+http://sources.buildroot.net/acl",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-acl-2.3.1",
+        "source_dir": "output/build/host-acl-2.3.1",
+        "build_dir": "output/build/host-acl-2.3.1/",
+        "dependencies": [
+            "host-attr",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:acl_project:acl:2.3.1:*:*:*:*:*:*:*"
+    },
+    "host-attr": {
+        "type": "host",
+        "name": "attr",
+        "virtual": false,
+        "version": "2.5.1",
+        "licenses": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+        "dl_dir": "attr",
+        "downloads": [
+            {
+                "source": "attr-2.5.1.tar.xz",
+                "uris": [
+                    "http+http://download.savannah.gnu.org/releases/attr",
+                    "http|urlencode+http://sources.buildroot.net/attr",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-attr-2.5.1",
+        "source_dir": "output/build/host-attr-2.5.1",
+        "build_dir": "output/build/host-attr-2.5.1/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:attr_project:attr:2.5.1:*:*:*:*:*:*:*"
+    },
+    "host-autoconf": {
+        "type": "host",
+        "name": "autoconf",
+        "virtual": false,
+        "version": "2.71",
+        "licenses": "GPL-3.0+ with exceptions",
+        "dl_dir": "autoconf",
+        "downloads": [
+            {
+                "source": "autoconf-2.71.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/autoconf",
+                    "http|urlencode+http://sources.buildroot.net/autoconf",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-autoconf-2.71",
+        "source_dir": "output/build/host-autoconf-2.71",
+        "build_dir": "output/build/host-autoconf-2.71/",
+        "dependencies": [
+            "host-libtool",
+            "host-m4",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-automake": {
+        "type": "host",
+        "name": "automake",
+        "virtual": false,
+        "version": "1.16.5",
+        "licenses": "GPL-2.0+",
+        "dl_dir": "automake",
+        "downloads": [
+            {
+                "source": "automake-1.16.5.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/automake",
+                    "http|urlencode+http://sources.buildroot.net/automake",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-automake-1.16.5",
+        "source_dir": "output/build/host-automake-1.16.5",
+        "build_dir": "output/build/host-automake-1.16.5/",
+        "dependencies": [
+            "host-autoconf",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gnu:automake:1.16.5:*:*:*:*:*:*:*"
+    },
+    "host-binutils": {
+        "type": "host",
+        "name": "binutils",
+        "virtual": false,
+        "version": "2.38",
+        "licenses": "GPL-3.0+, libiberty LGPL-2.1+",
+        "dl_dir": "binutils",
+        "downloads": [
+            {
+                "source": "binutils-2.38.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/binutils",
+                    "http|urlencode+http://sources.buildroot.net/binutils",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-binutils-2.38",
+        "source_dir": "output/build/host-binutils-2.38",
+        "build_dir": "output/build/host-binutils-2.38/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gnu:binutils:2.38:*:*:*:*:*:*:*"
+    },
+    "host-bison": {
+        "type": "host",
+        "name": "bison",
+        "virtual": false,
+        "version": "3.8.2",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "bison",
+        "downloads": [
+            {
+                "source": "bison-3.8.2.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/bison",
+                    "http|urlencode+http://sources.buildroot.net/bison",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-bison-3.8.2",
+        "source_dir": "output/build/host-bison-3.8.2",
+        "build_dir": "output/build/host-bison-3.8.2/",
+        "dependencies": [
+            "host-m4",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "glibc",
+            "linux"
+        ],
+        "cpe-id": "cpe:2.3:a:gnu:bison:3.8.2:*:*:*:*:*:*:*"
+    },
+    "host-dosfstools": {
+        "type": "host",
+        "name": "dosfstools",
+        "virtual": false,
+        "version": "4.2",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "dosfstools",
+        "downloads": [
+            {
+                "source": "dosfstools-4.2.tar.gz",
+                "uris": [
+                    "https+https://github.com/dosfstools/dosfstools/releases/download/v4.2",
+                    "http|urlencode+http://sources.buildroot.net/dosfstools",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-dosfstools-4.2",
+        "source_dir": "output/build/host-dosfstools-4.2",
+        "build_dir": "output/build/host-dosfstools-4.2/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:dosfstools_project:dosfstools:4.2:*:*:*:*:*:*:*"
+    },
+    "host-e2fsprogs": {
+        "type": "host",
+        "name": "e2fsprogs",
+        "virtual": false,
+        "version": "1.46.5",
+        "licenses": "GPL-2.0, MIT-like with advertising clause (libss and libet)",
+        "dl_dir": "e2fsprogs",
+        "downloads": [
+            {
+                "source": "e2fsprogs-1.46.5.tar.xz",
+                "uris": [
+                    "https+https://cdn.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.5",
+                    "http|urlencode+http://sources.buildroot.net/e2fsprogs",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-e2fsprogs-1.46.5",
+        "source_dir": "output/build/host-e2fsprogs-1.46.5",
+        "build_dir": "output/build/host-e2fsprogs-1.46.5/",
+        "dependencies": [
+            "host-pkgconf",
+            "host-skeleton",
+            "host-util-linux"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:e2fsprogs_project:e2fsprogs:1.46.5:*:*:*:*:*:*:*"
+    },
+    "host-fakeroot": {
+        "type": "host",
+        "name": "fakeroot",
+        "virtual": false,
+        "version": "1.30.1",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "fakeroot",
+        "downloads": [
+            {
+                "source": "fakeroot_1.30.1.orig.tar.gz",
+                "uris": [
+                    "https+https://snapshot.debian.org/archive/debian/20221120T030258Z/pool/main/f/fakeroot",
+                    "http|urlencode+http://sources.buildroot.net/fakeroot",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-fakeroot-1.30.1",
+        "source_dir": "output/build/host-fakeroot-1.30.1",
+        "build_dir": "output/build/host-fakeroot-1.30.1/",
+        "dependencies": [
+            "host-acl",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-flex": {
+        "type": "host",
+        "name": "flex",
+        "virtual": false,
+        "version": "2.6.4",
+        "licenses": "FLEX",
+        "dl_dir": "flex",
+        "downloads": [
+            {
+                "source": "flex-2.6.4.tar.gz",
+                "uris": [
+                    "https+https://github.com/westes/flex/files/981163",
+                    "http|urlencode+http://sources.buildroot.net/flex",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-flex-2.6.4",
+        "source_dir": "output/build/host-flex-2.6.4",
+        "build_dir": "output/build/host-flex-2.6.4/",
+        "dependencies": [
+            "host-autoconf",
+            "host-automake",
+            "host-gettext",
+            "host-libtool",
+            "host-m4",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "linux"
+        ],
+        "cpe-id": "cpe:2.3:a:flex_project:flex:2.6.4:*:*:*:*:*:*:*"
+    },
+    "host-gawk": {
+        "type": "host",
+        "name": "gawk",
+        "virtual": false,
+        "version": "5.2.0",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "gawk",
+        "downloads": [
+            {
+                "source": "gawk-5.2.0.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/gawk",
+                    "http|urlencode+http://sources.buildroot.net/gawk",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-gawk-5.2.0",
+        "source_dir": "output/build/host-gawk-5.2.0",
+        "build_dir": "output/build/host-gawk-5.2.0/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "glibc"
+        ]
+    },
+    "host-gcc-final": {
+        "type": "host",
+        "name": "gcc-final",
+        "virtual": false,
+        "version": "11.4.0",
+        "licenses": "unknown",
+        "dl_dir": "gcc",
+        "downloads": [
+            {
+                "source": "gcc-11.4.0.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/gcc/gcc-11.4.0",
+                    "http|urlencode+http://sources.buildroot.net/gcc",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-gcc-final-11.4.0",
+        "source_dir": "output/build/host-gcc-final-11.4.0",
+        "build_dir": "output/build/host-gcc-final-11.4.0/build",
+        "dependencies": [
+            "glibc",
+            "host-binutils",
+            "host-gmp",
+            "host-mpc",
+            "host-mpfr",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "toolchain-buildroot"
+        ]
+    },
+    "host-gcc-initial": {
+        "type": "host",
+        "name": "gcc-initial",
+        "virtual": false,
+        "version": "11.4.0",
+        "licenses": "unknown",
+        "dl_dir": "gcc",
+        "downloads": [
+            {
+                "source": "gcc-11.4.0.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/gcc/gcc-11.4.0",
+                    "http|urlencode+http://sources.buildroot.net/gcc",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-gcc-initial-11.4.0",
+        "source_dir": "output/build/host-gcc-initial-11.4.0",
+        "build_dir": "output/build/host-gcc-initial-11.4.0/build",
+        "dependencies": [
+            "host-binutils",
+            "host-gmp",
+            "host-mpc",
+            "host-mpfr",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "glibc"
+        ]
+    },
+    "host-genimage": {
+        "type": "host",
+        "name": "genimage",
+        "virtual": false,
+        "version": "16",
+        "licenses": "GPL-2.0",
+        "dl_dir": "genimage",
+        "downloads": [
+            {
+                "source": "genimage-16.tar.xz",
+                "uris": [
+                    "https+https://github.com/pengutronix/genimage/releases/download/v16",
+                    "http|urlencode+http://sources.buildroot.net/genimage",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-genimage-16",
+        "source_dir": "output/build/host-genimage-16",
+        "build_dir": "output/build/host-genimage-16/",
+        "dependencies": [
+            "host-libconfuse",
+            "host-pkgconf",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-gettext": {
+        "type": "host",
+        "name": "gettext",
+        "virtual": true,
+        "stamp_dir": "output/build/host-gettext",
+        "source_dir": "output/build/host-gettext",
+        "build_dir": "output/build/host-gettext/",
+        "dependencies": [
+            "host-gettext-tiny",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-gettext-tiny": {
+        "type": "host",
+        "name": "gettext-tiny",
+        "virtual": false,
+        "version": "0.3.2",
+        "licenses": "MIT, GPL-3.0+ (extra gettext)",
+        "dl_dir": "gettext-tiny",
+        "downloads": [
+            {
+                "source": "gettext-0.20.1.tar.xz",
+                "uris": [
+                    "http://ftpmirror.gnu.org/gettext",
+                    "http|urlencode+http://sources.buildroot.net/gettext-tiny",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            },
+            {
+                "source": "gettext-tiny-0.3.2.tar.gz",
+                "uris": [
+                    "https+https://github.com/sabotage-linux/gettext-tiny/archive/v0.3.2",
+                    "http|urlencode+http://sources.buildroot.net/gettext-tiny",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-gettext-tiny-0.3.2",
+        "source_dir": "output/build/host-gettext-tiny-0.3.2",
+        "build_dir": "output/build/host-gettext-tiny-0.3.2/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-gmp": {
+        "type": "host",
+        "name": "gmp",
+        "virtual": false,
+        "version": "6.2.1",
+        "licenses": "LGPL-3.0+ or GPL-2.0+",
+        "dl_dir": "gmp",
+        "downloads": [
+            {
+                "source": "gmp-6.2.1.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/gmp",
+                    "http|urlencode+http://sources.buildroot.net/gmp",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-gmp-6.2.1",
+        "source_dir": "output/build/host-gmp-6.2.1",
+        "build_dir": "output/build/host-gmp-6.2.1/",
+        "dependencies": [
+            "host-m4",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gmplib:gmp:6.2.1:*:*:*:*:*:*:*"
+    },
+    "host-kmod": {
+        "type": "host",
+        "name": "kmod",
+        "virtual": false,
+        "version": "30",
+        "licenses": "LGPL-2.1+ (library)",
+        "dl_dir": "kmod",
+        "downloads": [
+            {
+                "source": "kmod-30.tar.xz",
+                "uris": [
+                    "https+https://cdn.kernel.org/pub/linux/utils/kernel/kmod",
+                    "http|urlencode+http://sources.buildroot.net/kmod",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-kmod-30",
+        "source_dir": "output/build/host-kmod-30",
+        "build_dir": "output/build/host-kmod-30/",
+        "dependencies": [
+            "host-pkgconf",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "linux"
+        ],
+        "cpe-id": "cpe:2.3:a:kernel:kmod:30:*:*:*:*:*:*:*"
+    },
+    "host-libconfuse": {
+        "type": "host",
+        "name": "libconfuse",
+        "virtual": false,
+        "version": "3.3",
+        "licenses": "ISC",
+        "dl_dir": "libconfuse",
+        "downloads": [
+            {
+                "source": "confuse-3.3.tar.xz",
+                "uris": [
+                    "https+https://github.com/martinh/libconfuse/releases/download/v3.3",
+                    "http|urlencode+http://sources.buildroot.net/libconfuse",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-libconfuse-3.3",
+        "source_dir": "output/build/host-libconfuse-3.3",
+        "build_dir": "output/build/host-libconfuse-3.3/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "host-genimage"
+        ],
+        "cpe-id": "cpe:2.3:a:libconfuse_project:libconfuse:3.3:*:*:*:*:*:*:*"
+    },
+    "host-libopenssl": {
+        "type": "host",
+        "name": "libopenssl",
+        "virtual": false,
+        "version": "1.1.1u",
+        "licenses": "OpenSSL or SSLeay",
+        "dl_dir": "libopenssl",
+        "downloads": [
+            {
+                "source": "openssl-1.1.1u.tar.gz",
+                "uris": [
+                    "https+https://www.openssl.org/source",
+                    "http|urlencode+http://sources.buildroot.net/libopenssl",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-libopenssl-1.1.1u",
+        "source_dir": "output/build/host-libopenssl-1.1.1u",
+        "build_dir": "output/build/host-libopenssl-1.1.1u/",
+        "dependencies": [
+            "host-skeleton",
+            "host-zlib"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:openssl:openssl:1.1.1u:*:*:*:*:*:*:*"
+    },
+    "host-libtool": {
+        "type": "host",
+        "name": "libtool",
+        "virtual": false,
+        "version": "2.4.6",
+        "licenses": "GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)",
+        "dl_dir": "libtool",
+        "downloads": [
+            {
+                "source": "libtool-2.4.6.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/libtool",
+                    "http|urlencode+http://sources.buildroot.net/libtool",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-libtool-2.4.6",
+        "source_dir": "output/build/host-libtool-2.4.6",
+        "build_dir": "output/build/host-libtool-2.4.6/.",
+        "dependencies": [
+            "host-m4",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gnu:libtool:2.4.6:*:*:*:*:*:*:*"
+    },
+    "host-libzlib": {
+        "type": "host",
+        "name": "libzlib",
+        "virtual": false,
+        "version": "1.2.13",
+        "licenses": "Zlib",
+        "dl_dir": "libzlib",
+        "downloads": [
+            {
+                "source": "zlib-1.2.13.tar.xz",
+                "uris": [
+                    "http+http://www.zlib.net",
+                    "http|urlencode+http://sources.buildroot.net/libzlib",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-libzlib-1.2.13",
+        "source_dir": "output/build/host-libzlib-1.2.13",
+        "build_dir": "output/build/host-libzlib-1.2.13/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:zlib:zlib:1.2.13:*:*:*:*:*:*:*"
+    },
+    "host-lzip": {
+        "type": "host",
+        "name": "lzip",
+        "virtual": false,
+        "version": "1.23",
+        "licenses": "GPL-2.0+",
+        "dl_dir": "lzip",
+        "downloads": [
+            {
+                "source": "lzip-1.23.tar.gz",
+                "uris": [
+                    "http+http://download.savannah.gnu.org/releases/lzip",
+                    "http|urlencode+http://sources.buildroot.net/lzip",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-lzip-1.23",
+        "source_dir": "output/build/host-lzip-1.23",
+        "build_dir": "output/build/host-lzip-1.23/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "host-mtools"
+        ]
+    },
+    "host-m4": {
+        "type": "host",
+        "name": "m4",
+        "virtual": false,
+        "version": "1.4.19",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "m4",
+        "downloads": [
+            {
+                "source": "m4-1.4.19.tar.xz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/m4",
+                    "http|urlencode+http://sources.buildroot.net/m4",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-m4-1.4.19",
+        "source_dir": "output/build/host-m4-1.4.19",
+        "build_dir": "output/build/host-m4-1.4.19/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-makedevs": {
+        "type": "host",
+        "name": "makedevs",
+        "virtual": false,
+        "version": "",
+        "licenses": "GPL-2.0",
+        "dl_dir": "makedevs",
+        "downloads": [],
+        "stamp_dir": "output/build/host-makedevs",
+        "source_dir": "output/build/host-makedevs",
+        "build_dir": "output/build/host-makedevs/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-mpc": {
+        "type": "host",
+        "name": "mpc",
+        "virtual": false,
+        "version": "1.2.1",
+        "licenses": "LGPL-3.0+",
+        "dl_dir": "mpc",
+        "downloads": [
+            {
+                "source": "mpc-1.2.1.tar.gz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/mpc",
+                    "http|urlencode+http://sources.buildroot.net/mpc",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-mpc-1.2.1",
+        "source_dir": "output/build/host-mpc-1.2.1",
+        "build_dir": "output/build/host-mpc-1.2.1/",
+        "dependencies": [
+            "host-gmp",
+            "host-mpfr",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-mpfr": {
+        "type": "host",
+        "name": "mpfr",
+        "virtual": false,
+        "version": "4.1.1",
+        "licenses": "LGPL-3.0+",
+        "dl_dir": "mpfr",
+        "downloads": [
+            {
+                "source": "mpfr-4.1.1.tar.xz",
+                "uris": [
+                    "http+http://www.mpfr.org/mpfr-4.1.1",
+                    "http|urlencode+http://sources.buildroot.net/mpfr",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-mpfr-4.1.1",
+        "source_dir": "output/build/host-mpfr-4.1.1",
+        "build_dir": "output/build/host-mpfr-4.1.1/",
+        "dependencies": [
+            "host-gmp",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:a:gnu:mpfr:4.1.1:*:*:*:*:*:*:*"
+    },
+    "host-mtools": {
+        "type": "host",
+        "name": "mtools",
+        "virtual": false,
+        "version": "4.0.38",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "mtools",
+        "downloads": [
+            {
+                "source": "mtools-4.0.38.tar.lz",
+                "uris": [
+                    "http+http://ftpmirror.gnu.org/mtools",
+                    "http|urlencode+http://sources.buildroot.net/mtools",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-mtools-4.0.38",
+        "source_dir": "output/build/host-mtools-4.0.38",
+        "build_dir": "output/build/host-mtools-4.0.38/",
+        "dependencies": [
+            "host-lzip",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-openssl": {
+        "type": "host",
+        "name": "openssl",
+        "virtual": true,
+        "stamp_dir": "output/build/host-openssl",
+        "source_dir": "output/build/host-openssl",
+        "build_dir": "output/build/host-openssl/",
+        "dependencies": [
+            "host-libopenssl",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "linux"
+        ]
+    },
+    "host-patchelf": {
+        "type": "host",
+        "name": "patchelf",
+        "virtual": false,
+        "version": "0.13",
+        "licenses": "GPL-3.0+",
+        "dl_dir": "patchelf",
+        "downloads": [
+            {
+                "source": "patchelf-0.13.tar.bz2",
+                "uris": [
+                    "https+https://github.com/NixOS/patchelf/releases/download/0.13",
+                    "http|urlencode+http://sources.buildroot.net/patchelf",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-patchelf-0.13",
+        "source_dir": "output/build/host-patchelf-0.13",
+        "build_dir": "output/build/host-patchelf-0.13/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": []
+    },
+    "host-pkgconf": {
+        "type": "host",
+        "name": "pkgconf",
+        "virtual": false,
+        "version": "1.6.3",
+        "licenses": "pkgconf license",
+        "dl_dir": "pkgconf",
+        "downloads": [
+            {
+                "source": "pkgconf-1.6.3.tar.xz",
+                "uris": [
+                    "https+https://distfiles.ariadne.space/pkgconf",
+                    "http|urlencode+http://sources.buildroot.net/pkgconf",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-pkgconf-1.6.3",
+        "source_dir": "output/build/host-pkgconf-1.6.3",
+        "build_dir": "output/build/host-pkgconf-1.6.3/",
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "host-e2fsprogs",
+            "host-genimage",
+            "host-kmod",
+            "host-util-linux"
+        ],
+        "cpe-id": "cpe:2.3:a:pkgconf:pkgconf:1.6.3:*:*:*:*:*:*:*"
+    },
+    "host-skeleton": {
+        "type": "host",
+        "name": "skeleton",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "skeleton",
+        "downloads": [],
+        "stamp_dir": "output/build/host-skeleton",
+        "source_dir": "output/build/host-skeleton",
+        "build_dir": "output/build/host-skeleton/",
+        "dependencies": [],
+        "reverse_dependencies": [
+            "busybox",
+            "glibc",
+            "host-dosfstools",
+            "host-e2fsprogs",
+            "host-genimage",
+            "host-kmod",
+            "host-mtools",
+            "host-patchelf",
+            "host-util-linux",
+            "ifupdown-scripts",
+            "initscripts",
+            "linux",
+            "linux-headers",
+            "rpi-firmware",
+            "skeleton",
+            "skeleton-init-common",
+            "skeleton-init-sysv",
+            "toolchain",
+            "toolchain-buildroot",
+            "urandom-scripts"
+        ]
+    },
+    "host-util-linux": {
+        "type": "host",
+        "name": "util-linux",
+        "virtual": false,
+        "version": "2.38",
+        "licenses": "GPL-2.0+, BSD-4-Clause, LGPL-2.1+ (libblkid, libfdisk, libmount), BSD-3-Clause (libuuid), ISC (rfkill)",
+        "dl_dir": "util-linux",
+        "downloads": [
+            {
+                "source": "util-linux-2.38.tar.xz",
+                "uris": [
+                    "https+https://cdn.kernel.org/pub/linux/utils/util-linux/v2.38",
+                    "http|urlencode+http://sources.buildroot.net/util-linux",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/host-util-linux-2.38",
+        "source_dir": "output/build/host-util-linux-2.38",
+        "build_dir": "output/build/host-util-linux-2.38/",
+        "dependencies": [
+            "host-pkgconf",
+            "host-skeleton",
+            "host-zlib"
+        ],
+        "reverse_dependencies": [
+            "host-e2fsprogs"
+        ],
+        "cpe-id": "cpe:2.3:a:kernel:util-linux:2.38:*:*:*:*:*:*:*"
+    },
+    "host-zlib": {
+        "type": "host",
+        "name": "zlib",
+        "virtual": true,
+        "stamp_dir": "output/build/host-zlib",
+        "source_dir": "output/build/host-zlib",
+        "build_dir": "output/build/host-zlib/",
+        "dependencies": [
+            "host-libzlib",
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "host-util-linux"
+        ]
+    },
+    "ifupdown-scripts": {
+        "type": "target",
+        "name": "ifupdown-scripts",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "ifupdown-scripts",
+        "downloads": [],
+        "stamp_dir": "output/build/ifupdown-scripts",
+        "source_dir": "output/build/ifupdown-scripts",
+        "build_dir": "output/build/ifupdown-scripts/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": []
+    },
+    "initscripts": {
+        "type": "target",
+        "name": "initscripts",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "initscripts",
+        "downloads": [],
+        "stamp_dir": "output/build/initscripts",
+        "source_dir": "output/build/initscripts",
+        "build_dir": "output/build/initscripts/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": []
+    },
+    "linux": {
+        "type": "target",
+        "name": "linux",
+        "virtual": false,
+        "version": "custom",
+        "licenses": "GPL-2.0",
+        "dl_dir": "linux",
+        "downloads": [
+            {
+                "source": "linux-0b54dbda3cca2beb51e236a25738784e90853b64.tar.gz",
+                "uris": [
+                    "https+https://github.com/raspberrypi/linux/archive/0b54dbda3cca2beb51e236a25738784e90853b64",
+                    "http|urlencode+http://sources.buildroot.net/linux",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/linux-custom",
+        "source_dir": "output/build/linux-custom",
+        "build_dir": "output/build/linux-custom/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": true,
+        "dependencies": [
+            "host-bison",
+            "host-flex",
+            "host-kmod",
+            "host-openssl",
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": [],
+        "cpe-id": "cpe:2.3:o:linux:linux_kernel:custom:*:*:*:*:*:*:*"
+    },
+    "linux-headers": {
+        "type": "target",
+        "name": "linux-headers",
+        "virtual": false,
+        "version": "custom",
+        "licenses": "GPL-2.0",
+        "dl_dir": "linux",
+        "downloads": [
+            {
+                "source": "linux-0b54dbda3cca2beb51e236a25738784e90853b64.tar.gz",
+                "uris": [
+                    "https+https://github.com/raspberrypi/linux/archive/0b54dbda3cca2beb51e236a25738784e90853b64",
+                    "http|urlencode+http://sources.buildroot.net/linux",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/linux-headers-custom",
+        "source_dir": "output/build/linux-headers-custom",
+        "build_dir": "output/build/linux-headers-custom/",
+        "install_target": true,
+        "install_staging": true,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton"
+        ],
+        "reverse_dependencies": [
+            "glibc"
+        ],
+        "cpe-id": "cpe:2.3:a:linux:linux_kernel:custom:*:*:*:*:*:*:*"
+    },
+    "rootfs-common": {
+        "type": "rootfs",
+        "image_name": null,
+        "dependencies": [
+            "host-fakeroot",
+            "host-makedevs"
+        ]
+    },
+    "rootfs-ext2": {
+        "type": "rootfs",
+        "image_name": "rootfs.ext2",
+        "dependencies": [
+            "host-e2fsprogs",
+            "rootfs-common"
+        ]
+    },
+    "rpi-firmware": {
+        "type": "target",
+        "name": "rpi-firmware",
+        "virtual": false,
+        "version": "3f20b832b27cd730deb6419b570f31a98167eef6",
+        "licenses": "BSD-3-Clause",
+        "dl_dir": "rpi-firmware",
+        "downloads": [
+            {
+                "source": "rpi-firmware-3f20b832b27cd730deb6419b570f31a98167eef6.tar.gz",
+                "uris": [
+                    "https+https://github.com/raspberrypi/firmware/archive/3f20b832b27cd730deb6419b570f31a98167eef6",
+                    "http|urlencode+http://sources.buildroot.net/rpi-firmware",
+                    "http|urlencode+http://sources.buildroot.net"
+                ]
+            }
+        ],
+        "stamp_dir": "output/build/rpi-firmware-3f20b832b27cd730deb6419b570f31a98167eef6",
+        "source_dir": "output/build/rpi-firmware-3f20b832b27cd730deb6419b570f31a98167eef6",
+        "build_dir": "output/build/rpi-firmware-3f20b832b27cd730deb6419b570f31a98167eef6/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": true,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": []
+    },
+    "skeleton": {
+        "type": "target",
+        "name": "skeleton",
+        "virtual": true,
+        "stamp_dir": "output/build/skeleton",
+        "source_dir": "output/build/skeleton",
+        "build_dir": "output/build/skeleton/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton-init-sysv"
+        ],
+        "reverse_dependencies": [
+            "busybox",
+            "glibc",
+            "ifupdown-scripts",
+            "initscripts",
+            "linux",
+            "linux-headers",
+            "rpi-firmware",
+            "toolchain",
+            "toolchain-buildroot",
+            "urandom-scripts"
+        ]
+    },
+    "skeleton-init-common": {
+        "type": "target",
+        "name": "skeleton-init-common",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "skeleton-init-common",
+        "downloads": [],
+        "stamp_dir": "output/build/skeleton-init-common",
+        "source_dir": "output/build/skeleton-init-common",
+        "build_dir": "output/build/skeleton-init-common/",
+        "install_target": true,
+        "install_staging": true,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton"
+        ],
+        "reverse_dependencies": [
+            "skeleton-init-sysv"
+        ]
+    },
+    "skeleton-init-sysv": {
+        "type": "target",
+        "name": "skeleton-init-sysv",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "skeleton-init-sysv",
+        "downloads": [],
+        "stamp_dir": "output/build/skeleton-init-sysv",
+        "source_dir": "output/build/skeleton-init-sysv",
+        "build_dir": "output/build/skeleton-init-sysv/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton-init-common"
+        ],
+        "reverse_dependencies": [
+            "skeleton"
+        ]
+    },
+    "toolchain": {
+        "type": "target",
+        "name": "toolchain",
+        "virtual": true,
+        "stamp_dir": "output/build/toolchain",
+        "source_dir": "output/build/toolchain",
+        "build_dir": "output/build/toolchain/",
+        "install_target": true,
+        "install_staging": true,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain-buildroot"
+        ],
+        "reverse_dependencies": [
+            "busybox",
+            "ifupdown-scripts",
+            "initscripts",
+            "linux",
+            "rpi-firmware",
+            "urandom-scripts"
+        ]
+    },
+    "toolchain-buildroot": {
+        "type": "target",
+        "name": "toolchain-buildroot",
+        "virtual": true,
+        "stamp_dir": "output/build/toolchain-buildroot",
+        "source_dir": "output/build/toolchain-buildroot",
+        "build_dir": "output/build/toolchain-buildroot/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-gcc-final",
+            "host-skeleton",
+            "skeleton"
+        ],
+        "reverse_dependencies": [
+            "toolchain"
+        ]
+    },
+    "urandom-scripts": {
+        "type": "target",
+        "name": "urandom-scripts",
+        "virtual": false,
+        "version": "",
+        "licenses": "unknown",
+        "dl_dir": "urandom-scripts",
+        "downloads": [],
+        "stamp_dir": "output/build/urandom-scripts",
+        "source_dir": "output/build/urandom-scripts",
+        "build_dir": "output/build/urandom-scripts/",
+        "install_target": true,
+        "install_staging": false,
+        "install_images": false,
+        "dependencies": [
+            "host-skeleton",
+            "skeleton",
+            "toolchain"
+        ],
+        "reverse_dependencies": []
+    }
+}

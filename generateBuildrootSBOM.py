@@ -20,7 +20,6 @@
 import argparse
 import csv
 import json
-import sys
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
@@ -34,7 +33,7 @@ from xml.dom import minidom
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
-def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
+def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom):
     br_bom_local: Bom = br_bom
     #
     # Capture the components that describe the complete inventory of first-party software
@@ -45,16 +44,17 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
 
         for row in sheetX:
             try:
-
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': row['SOURCE SITE'] + row['SOURCE ARCHIVE']})
                 lfac = LicenseFactory()
-
+                cpe_id_value = "unknown"
+                cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
                                            type=ComponentType.FIRMWARE,
                                            licenses=[lfac.make_from_string(row['LICENSE'])],
                                            version=row['VERSION'],
                                            purl=purl_info,
+                                           cpe=cpe_id_value,
                                            bom_ref=row['PACKAGE'])
 
                 br_bom_local.components.add(next_component)
@@ -70,6 +70,34 @@ def create_buildroot_sbom(input_file_name: str, br_bom: Bom):
     return br_bom_local
 
 
+# From the cpe.json file iterate across the list of components
+# For each component in the br_bom search the cpe file for a matching component by comparing
+# either bom-ref or name field. Once a match is found from the cpe file copy the name value
+# pair of the cpe-id field replacing the purl filed in br_bom.
+# input : name of the software component
+# output: returns the cpe value
+def get_cpe_value(cpe_file_name: str, sw_component_name: str):
+    retval = "not found"
+    if (cpe_file_name == "unknown"):
+        return retval
+    cpe_file = open("cpe/cpe_data_pp.json")
+    cpe_data = dict(json.load(cpe_file))
+    for cpe_key, cpe_value in cpe_data.items():
+        try:
+            sw_object = dict(cpe_data[cpe_key])
+            if (sw_object['name'] == sw_component_name):
+                x = sw_object.items()
+                retval = sw_object['cpe-id']
+                cpe_file.close()
+                return retval
+
+        except: # Some entries do not have a "name" key and no "cpe-id" so skip these.
+            pass
+
+    cpe_file.close()
+    return retval
+
+
 def my_main(*args):
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv',
@@ -80,6 +108,9 @@ def my_main(*args):
     parser.add_argument('-v', action='store', dest='product_version', default='unknown', help='product version string')
     parser.add_argument('-m', action='store', dest='manufacturer_name', default='unknown',
                         help='name of product manufacturer')
+    parser.add_argument('-c', action='store', dest='cpe_input_file', default='unknown',
+                        help='cpe file from make show-info')
+
     if (len(args) != 0):
         unittest_args = list(args)
         args = parser.parse_args(list(args))
@@ -91,6 +122,7 @@ def my_main(*args):
     print('SBOM Product Name: ' + args.manufacturer_name)
     print('SBOM Product Version: ' + args.product_version)
     print('SBOM Product Manufacturer: ' + args.manufacturer_name)
+    print('Buildroot cpe input file: ' + args.cpe_input_file)
 
     br_bom = Bom()
     br_bom.metadata.component = rootComponent = Component(name=args.product_name,
@@ -99,8 +131,7 @@ def my_main(*args):
     br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
                           component=rootComponent)
     br_bom.metadata = br_meta
-
-    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), br_bom)
+    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "),str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
     outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
@@ -120,6 +151,7 @@ def my_main(*args):
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
     myxmldocfile.close()
+
 
 if __name__ == "__main__":
     my_main()

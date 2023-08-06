@@ -25,14 +25,15 @@ This can be overwritten as follows:
 ```ShellSession
 
   
-$ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.2.3.4"
+$ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.2.3.4" -m "company name" -c cpe.json
       Usage:  generateBom.cli [OPTIONS]
       Options:
-        -i <path> - the alternate filename to a frozen manifest.csv
-        -o <path> - the bom file to create
+        -i <path> - filename of the output from make legal-info, example: manifest.csv
+        -o <path> - the bom file name to create
         -n name of the project or product SBOM <project name in quotes>
         -v your product SBOM version <project version in quotes>
         -m SBOM manufacturer name
+        -c <path> - cpe file name from make show-info, example cpe.json
 ```
 
 ## CycloneDX Schema Support
