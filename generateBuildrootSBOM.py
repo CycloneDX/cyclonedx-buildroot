@@ -80,7 +80,7 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str):
     retval = "not found"
     if (cpe_file_name == "unknown"):
         return retval
-    cpe_file = open("cpe/cpe_data_pp.json")
+    cpe_file = open(cpe_file_name)
     cpe_data = dict(json.load(cpe_file))
     for cpe_key, cpe_value in cpe_data.items():
         try:
