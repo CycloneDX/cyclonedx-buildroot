@@ -36,6 +36,8 @@ $ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.
         -c <path> - cpe file name from make show-info, example cpe.json
 ```
 
+![CycloneDX logo](https://github.com/CycloneDX/cyclonedx-buildroot/blob/process-flow-description/build-Page-2.drawio.png)
+
 ## CycloneDX Schema Support
 
 The following table provides information on the version of this module, the CycloneDX schema version supported, as well as the output format options.
