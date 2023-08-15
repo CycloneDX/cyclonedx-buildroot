@@ -36,6 +36,12 @@ $ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.
         -c <path> - cpe file name from make show-info, example cpe.json
 ```
 
+Diagram depicting where this project fits into the pipeline of secure development activities. Note that while the diagram depicts a linear sequence of
+activities, the entire sequence is typically cyclical. The end state of SBOM management receives the SBOM files for the product versions to properly
+manage the state of vulnerabilities over time. 
+
+![CycloneDX logo](https://github.com/CycloneDX/cyclonedx-buildroot/blob/process-flow-description/build-Page-2.drawio.png)
+
 ## CycloneDX Schema Support
 
 The following table provides information on the version of this module, the CycloneDX schema version supported, as well as the output format options.
