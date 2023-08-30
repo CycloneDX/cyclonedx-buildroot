@@ -45,9 +45,9 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
         for row in sheetX:
             try:
 
-                download_url_value = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
+                download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
-                                       qualifiers={'download_url': download_url_value})
+                                       qualifiers={'download_url': download_url_with_slash})
                 lfac = LicenseFactory()
                 cpe_id_value = "unknown"
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
