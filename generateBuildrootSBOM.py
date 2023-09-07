@@ -49,11 +49,6 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': download_url_with_slash})
 
-                #my_lic = License()
-                #my_lic.name="LGPL-2.1"
-
-                #lic_choice = LicenseChoice(license=)
-
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
                 license_list = license_string.split(",")
