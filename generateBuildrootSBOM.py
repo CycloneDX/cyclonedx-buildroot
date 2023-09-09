@@ -24,7 +24,7 @@ import json
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
-from cyclonedx.factory.license import LicenseFactory
+from cyclonedx.factory.license import LicenseFactory, LicenseChoiceFactory
 from cyclonedx.model import OrganizationalEntity
 from cyclonedx.output import get_instance, BaseOutput, OutputFormat
 from xml.dom import minidom
@@ -48,12 +48,20 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': download_url_with_slash})
+
                 lfac = LicenseFactory()
+                license_string = row['LICENSE']
+                license_list = license_string.split(",")
+                license_for_component=[]
+                LCF = LicenseChoiceFactory(license_factory=lfac)
+                for licensenames in license_list:
+                    license_for_component.append(LCF.make_with_license(name_or_spdx=licensenames))
+
                 cpe_id_value = "unknown"
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
                                            type=ComponentType.FIRMWARE,
-                                           licenses=[lfac.make_from_string(row['LICENSE'])],
+                                           licenses=license_for_component,
                                            version=row['VERSION'],
                                            purl=purl_info,
                                            cpe=cpe_id_value,
