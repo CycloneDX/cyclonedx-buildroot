@@ -20,6 +20,7 @@
 import argparse
 import csv
 import json
+import os
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
@@ -161,6 +162,7 @@ def my_main(*args):
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
     myxmldocfile.close()
+    os.remove(args.output_file + ".one.xml")
 
 
 if __name__ == "__main__":
