@@ -34,6 +34,7 @@ from xml.dom import minidom
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
+# noinspection PyTypeChecker
 def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom):
     br_bom_local: Bom = br_bom
     #
@@ -53,12 +54,11 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
                 license_list = license_string.split(",")
-                license_for_component=[]
+                license_for_component = []
                 LCF = LicenseChoiceFactory(license_factory=lfac)
                 for licensenames in license_list:
                     license_for_component.append(LCF.make_with_license(name_or_spdx=licensenames))
 
-                cpe_id_value = "unknown"
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
                                            type=ComponentType.FIRMWARE,
@@ -84,25 +84,25 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 # From the cpe.json file iterate across the list of components
 # For each component in the br_bom search the cpe file for a matching component by comparing
 # either bom-ref or name field. Once a match is found from the cpe file copy the name value
-# pair of the cpe-id field replacing the purl filed in br_bom.
+# pair of the cpe-id field replacing the purl field in br_bom.
 # input : name of the software component
 # output: returns the cpe value
 def get_cpe_value(cpe_file_name: str, sw_component_name: str):
     retval = "not found"
-    if (cpe_file_name == "unknown"):
+    if cpe_file_name == "unknown":
         return retval
     cpe_file = open(cpe_file_name)
     cpe_data = dict(json.load(cpe_file))
     for cpe_key, cpe_value in cpe_data.items():
         try:
+            # noinspection PyTypeChecker
             sw_object = dict(cpe_data[cpe_key])
-            if (sw_object['name'] == sw_component_name):
-                x = sw_object.items()
+            if sw_object['name'] == sw_component_name:
                 retval = sw_object['cpe-id']
                 cpe_file.close()
                 return retval
 
-        except: # Some entries do not have a "name" key and no "cpe-id" so skip these.
+        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
 
     cpe_file.close()
@@ -122,7 +122,7 @@ def my_main(*args):
     parser.add_argument('-c', action='store', dest='cpe_input_file', default='unknown',
                         help='cpe file from make show-info')
 
-    if (len(args) != 0):
+    if len(args) != 0:
         unittest_args = list(args)
         args = parser.parse_args(list(args))
     else:
@@ -130,19 +130,18 @@ def my_main(*args):
 
     print('Buildroot manifest input file: ' + args.input_file)
     print('Output SBOM: ' + args.output_file)
-    print('SBOM Product Name: ' + args.manufacturer_name)
+    print('SBOM Product Name: ' + args.product_name)
     print('SBOM Product Version: ' + args.product_version)
     print('SBOM Product Manufacturer: ' + args.manufacturer_name)
     print('Buildroot cpe input file: ' + args.cpe_input_file)
 
     br_bom = Bom()
     br_bom.metadata.component = rootComponent = Component(name=args.product_name,
-                                                          version=args.product_version,
-                                                          bom_ref=args.product_name)
+                                                          version=args.product_version)
     br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
                           component=rootComponent)
     br_bom.metadata = br_meta
-    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "),str(args.cpe_input_file).strip(" "), br_bom)
+    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
     outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
