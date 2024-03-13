@@ -13,25 +13,20 @@ files = [
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "6.4.3"
-description = "Python library for CycloneDX"
+version = "4.2.3"
+description = "A library for producing CycloneDX SBOM (Software Bill of Materials) files."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "cyclonedx_python_lib-6.4.3-py3-none-any.whl", hash = "sha256:bc9f29073f4ed23b68ba01e342496cd2d1d5232d88b63abdc69f5072f472f8de"},
-    {file = "cyclonedx_python_lib-6.4.3.tar.gz", hash = "sha256:3d9450e500ca6f7cf9625e7bff700599dcca70e4a2180705b61917c59743506e"},
+    {file = "cyclonedx_python_lib-4.2.3-py3-none-any.whl", hash = "sha256:e9b923af525b6acf7bab917a35360b4b562b85dc15fde9eaa500828949adf73a"},
+    {file = "cyclonedx_python_lib-4.2.3.tar.gz", hash = "sha256:904068b55d1665f0ea96f38307603cc14f95c3b421f1687fc2411326aefde3a6"},
 ]
 
 [package.dependencies]
 license-expression = ">=30,<31"
-packageurl-python = ">=0.11,<2"
-py-serializable = ">=0.16,<2"
+packageurl-python = ">=0.11"
+py-serializable = ">=0.11.1,<0.12.0"
 sortedcontainers = ">=2.4.0,<3.0.0"
-
-[package.extras]
-json-validation = ["jsonschema[format] (>=4.18,<5.0)"]
-validation = ["jsonschema[format] (>=4.18,<5.0)", "lxml (>=4,<6)"]
-xml-validation = ["lxml (>=4,<6)"]
 
 [[package]]
 name = "defusedxml"
@@ -81,13 +76,13 @@ test = ["pytest"]
 
 [[package]]
 name = "py-serializable"
-version = "1.0.2"
+version = "0.11.1"
 description = "Library for serializing and deserializing Python Objects to and from JSON and XML."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "py_serializable-1.0.2-py3-none-any.whl", hash = "sha256:f09dee8595a583117ba446c50be183eff9699b7d54529e0506d4f0f2e093e4a3"},
-    {file = "py_serializable-1.0.2.tar.gz", hash = "sha256:158a98a7ffda067d21f844594ce571d97f36172ba538aee1a93196f8b5888bd8"},
+    {file = "py-serializable-0.11.1.tar.gz", hash = "sha256:ba0e1287b9e4f645a5334f1913abd8e647e7250209f84f55dce3909498a6f586"},
+    {file = "py_serializable-0.11.1-py3-none-any.whl", hash = "sha256:79e21f0672822e6200b15f45ce9f636e8126466f62dbd7d488c67313c72b5c3e"},
 ]
 
 [package.dependencies]
@@ -106,5 +101,5 @@ files = [
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.12"
-content-hash = "5b93e780da5779ffd480a8c6a2220f238a75b1a8797fe33cf06f1a244363176f"
+python-versions = "^3.9"
+content-hash = "371c722906dbbfb700563cff7ec9324921abfbdfced8f8c8ff0d017a1e29fabe"
