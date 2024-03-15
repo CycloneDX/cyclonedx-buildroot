@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "CycloneDX-Buildroot"
+version = "1.0.7"
+description = "Create a software bill of materials from the direct dependencies of a Buildroot generated project"
+authors = ["Robert Smigielski <ptdropper@users.noreply.github.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [
+    { include = "generateBuildrootSBOM" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+packageurl-python = "^0.14.0"
+cyclonedx-python-lib = "^4.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
