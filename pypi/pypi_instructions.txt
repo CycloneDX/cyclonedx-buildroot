@@ -1,0 +1,19 @@
+Instructions for using testpypi
+make a directory for this work cyclonedx-buildroot\generateBuildrootSBOM\pypi
+
+copy into that directory : LICENSE, pyproject.toml, and README.md
+Update pyproject.toml with the desired version value.
+
+    Create a sub folder named pypi\src\CycloneDX-Buildroot
+    copy into that folder __init__.py and generateBuildrootSBOM.py
+
+from the directory "pypi"
+     rm dist\*
+     py -m build
+     py -m twine upload --repository testpypi dist/*
+
+For the real pypi
+     py -m twine upload dist/*
+
+To install in both cases with an update to the version number in both pyproject.toml and below
+    py -m pip install CycloneDX-Buildroot=1.0.8
