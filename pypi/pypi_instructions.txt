@@ -1,4 +1,6 @@
 Instructions for using testpypi
+https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#
+
 make a directory for this work cyclonedx-buildroot\generateBuildrootSBOM\pypi
 
 copy into that directory : LICENSE, pyproject.toml, and README.md
@@ -8,9 +10,18 @@ Update pyproject.toml with the desired version value.
     copy into that folder __init__.py and generateBuildrootSBOM.py
 
 from the directory "pypi"
+create and enter a virtual environment
+python3 -m pip install twine
+python3 -m pip install build
+python3 -m build --sdist
      rm dist\*
      py -m build
-     py -m twine upload --repository testpypi dist/*
+     twine check dist/*
+     *** to testppi: py -m twine upload --repository testpypi dist/*
+pypi-<token>
+
+    Navigate to https://test.pypi.org/project/CycloneDX-Buildroot/
+
 
 For the real pypi
      py -m twine upload dist/*
