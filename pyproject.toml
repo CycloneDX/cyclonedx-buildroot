@@ -9,6 +9,9 @@ packages = [
     { include = "generateBuildrootSBOM.py" },
 ]
 
+[tool.poetry.scripts]
+generateBuildrootSBOM = "generateBuildrootSBOM:my_main"
+
 [tool.poetry.dependencies]
 python = ">=3.9, < 3.10"
 packageurl-python = "0.14.0"
