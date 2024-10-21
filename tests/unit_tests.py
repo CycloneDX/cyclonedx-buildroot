@@ -12,7 +12,7 @@ class TestStringMethods(unittest.TestCase):
         assert 1
 
     def test_valid_input_file_only(self):
-        generateBuildrootSBOM.my_main("-i man.csv")
+        generateBuildrootSBOM.my_main("-i manifest.csv")
         assert 1
     def test_valid_output_file_only(self):
         generateBuildrootSBOM.my_main("-o unittest_output.txt")
@@ -29,9 +29,16 @@ class TestStringMethods(unittest.TestCase):
         generateBuildrootSBOM.my_main("-m unittest_manufacturer_name")
         assert 1
 
+    # Test against the output of make show-info
     def test_valid_cpe_input_file(self):
         generateBuildrootSBOM.my_main("-c cpe_data_pp.json")
         assert 1
+
+    # Test against the output of make pkg-stats
+    def test_valid_cpe_input_file2(self):
+        generateBuildrootSBOM.my_main("-c cpe_data_show_pkg_stats.json")
+        assert 1
+
 
 if __name__ == '__main__':
     unittest.main()
