@@ -85,6 +85,8 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 # For each component in the br_bom search the cpe file for a matching component by comparing
 # either bom-ref or name field. Once a match is found from the cpe file copy the name value
 # pair of the cpe-id field replacing the purl field in br_bom.
+# Supports the Buildroot target "make show-info" or "make pkg-stats"
+#
 # input : name of the software component
 # output: returns the cpe value
 def get_cpe_value(cpe_file_name: str, sw_component_name: str):
@@ -101,7 +103,15 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str):
                 retval = sw_object['cpe-id']
                 cpe_file.close()
                 return retval
-
+        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
+            pass
+        try:
+            # "make pkg-stats"
+            if sw_component_name in cpe_value:
+                sw_object = cpe_value[sw_component_name]
+                retval = sw_object['cpeid']
+                cpe_file.close()
+                return retval
         except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
 

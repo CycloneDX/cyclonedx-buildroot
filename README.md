@@ -33,7 +33,7 @@ $ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.
         -n name of the project or product SBOM <project name in quotes>
         -v your product SBOM version <project version in quotes>
         -m SBOM manufacturer name
-        -c <path> - cpe file name from make show-info, example cpe.json
+        -c <path> - cpe file name resulting from Buildroot targets: "make show-info" or "make pkg-stats"
 ```
 
 Diagram depicting where this project fits into the pipeline of secure development activities. Note that while the diagram depicts a linear sequence of
