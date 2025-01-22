@@ -39,6 +39,10 @@ class TestStringMethods(unittest.TestCase):
         generateBuildrootSBOM.my_main("-c cpe_data_show_pkg_stats.json")
         assert 1
 
+    def test_split_non_parenthesized(self):
+        result = generateBuildrootSBOM._split_non_parenthesized("aaa,bbb(ccc,ddd),eee", ",")
+        assert result == [ 'aaa', 'bbb(ccc,ddd)', 'eee' ]
+
 
 if __name__ == '__main__':
     unittest.main()
