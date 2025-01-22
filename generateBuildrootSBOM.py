@@ -31,6 +31,24 @@ from cyclonedx.output import get_instance, BaseOutput, OutputFormat
 from xml.dom import minidom
 
 
+# Splits a string by the given separator character except inside parentheses.
+def _split_non_parenthesized(text, separator):
+    fragments = []
+    current_fragment = ''
+    parentheses_count = 0
+    for c in text:
+        if c == separator and parentheses_count == 0:
+            fragments.append(current_fragment)
+            current_fragment = ''
+        else:
+            current_fragment += c
+            if c == ')' and parentheses_count > 0: parentheses_count -= 1
+            if c == '(': parentheses_count += 1
+    
+    fragments.append(current_fragment)
+    return fragments
+
+
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
@@ -53,11 +71,11 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
-                license_list = license_string.split(",")
+                license_list = _split_non_parenthesized(license_string, ",")
                 license_for_component = []
                 LCF = LicenseChoiceFactory(license_factory=lfac)
                 for licensenames in license_list:
-                    license_for_component.append(LCF.make_with_license(name_or_spdx=licensenames))
+                    license_for_component.append(LCF.make_with_license(name_or_spdx=licensenames.strip()))
 
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
