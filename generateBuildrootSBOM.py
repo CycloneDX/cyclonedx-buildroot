@@ -108,7 +108,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 # input : name of the software component
 # output: returns the cpe value
 def get_cpe_value(cpe_file_name: str, sw_component_name: str):
-    retval = "not found"
+    retval = ""
     if cpe_file_name == "unknown":
         return retval
     cpe_file = open(cpe_file_name)
