@@ -25,11 +25,11 @@ import os
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
-from cyclonedx.factory.license import LicenseFactory, LicenseChoiceFactory
+from cyclonedx.factory.license import LicenseFactory
 from cyclonedx.model import OrganizationalEntity
 from cyclonedx.output import get_instance, BaseOutput, OutputFormat
 from xml.dom import minidom
-
+from cyclonedx.factory.license import InvalidLicenseExpressionException, InvalidSpdxLicenseException
 
 # Splits a string by the given separator character except inside parentheses.
 def _split_non_parenthesized(text, separator):
@@ -64,7 +64,6 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 
         for row in sheetX:
             try:
-
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': download_url_with_slash})
@@ -72,10 +71,11 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
                 license_list = _split_non_parenthesized(license_string, ",")
-                license_for_component = []
-                LCF = LicenseChoiceFactory(license_factory=lfac)
-                for licensenames in license_list:
-                    license_for_component.append(LCF.make_with_license(name_or_spdx=licensenames.strip()))
+
+                try:
+                    license_for_component = [lfac.make_with_expression(license_string)]
+                except InvalidLicenseExpressionException:
+                    license_for_component=""
 
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 next_component = Component(name=row['PACKAGE'],
