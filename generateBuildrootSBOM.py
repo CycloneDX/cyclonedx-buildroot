@@ -23,13 +23,16 @@ import json
 import os
 
 from cyclonedx.model.bom import Bom, BomMetaData
+# from something import BaseOutput
+from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
-from cyclonedx.model import OrganizationalEntity
-from cyclonedx.output import get_instance, BaseOutput, OutputFormat
+from json import loads as json_loads
 from xml.dom import minidom
 from cyclonedx.factory.license import InvalidLicenseExpressionException, InvalidSpdxLicenseException
+from cyclonedx.schema import SchemaVersion, OutputFormat
+from cyclonedx.output import make_outputter
 
 # Splits a string by the given separator character except inside parentheses.
 def _split_non_parenthesized(text, separator):
@@ -166,21 +169,24 @@ def my_main(*args):
     br_bom = Bom()
     br_bom.metadata.component = rootComponent = Component(name=args.product_name,
                                                           version=args.product_version)
-    br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
-                          component=rootComponent)
+    #br_meta = BomMetaData(manufacture=args.manufacturer_name,
+    #                      component=rootComponent)
+
+    # TODO: issue with xml manufacture handling
+    br_meta = BomMetaData(component=rootComponent)
+
     br_bom.metadata = br_meta
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
-    outputter: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.JSON)
-    bom_json = outputter.output_as_string()
     outputfile = open((args.output_file + ".json"), mode='w')
+    bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_4](br_bom).output_as_string(indent=3)
     json.dump(json.loads(bom_json), outputfile, indent=3)
     outputfile.close()
 
     # Produce the output in XML format that is in a one-line format.
-    outputterXML: BaseOutput(bom=br_bom) = get_instance(bom=br_bom, output_format=OutputFormat.XML)
-    outputterXML.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
+    my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_4)
+    serialized_xml = my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
     myxmldocfile = open((args.output_file + ".one.xml"))
