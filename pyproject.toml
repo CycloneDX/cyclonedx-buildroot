@@ -21,7 +21,8 @@ exclude = [
 ]
 
 [tool.poetry.scripts]
-generateBuildrootSBOM = "cyclonedx_buildroot._internal.cli:run"
+cyclonedx-buildroot = "cyclonedx_buildroot._internal.cli:run"
+generateBuildrootSBOM = "cyclonedx_buildroot._internal.cli:run"  # for backwards compatibility
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.8"
