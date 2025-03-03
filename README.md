@@ -16,25 +16,62 @@ cyber risk reduction.
 Buildroot provides a build target named "legal-info" which produces a set of files including manifest.csv. The legal-info
 is a general "make" target for a Buildroot project.
 
+## Requirements
+
+* `python >= 3.8`
+
+## Installation
+
+Install this from [Python Package Index (PyPI)][link_pypi] using your preferred Python package manager.
+
+install via one of commands:
+
+```shell
+python -m pip install CycloneDX-Buildroot   # install via pip
+pipx install CycloneDX-Buildroot            # install via pipx
+poetry add CycloneDX-Buildroot              # install via poetry
+uv tool install CycloneDX-Buildroot         # install via uv
+# ... you get the hang
+````
+
 ## Usage
+
+Call via one of commands:
+
+```shell
+cyclonedx-buildroot            # call script
+python -m cyclonedx_buildroot  # call python module CLI
+```
+
+### Help page
+
+```shellSession
+$ cyclonedx-buildroot --help
+usage: cyclonedx-buildroot [-h] [-i INPUT_FILE] [-o OUTPUT_FILE] [-n PRODUCT_NAME] [-v PRODUCT_VERSION] [-m MANUFACTURER_NAME] [-c CPE_INPUT_FILE]
+
+CycloneDX BOM Generator
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
+  -o OUTPUT_FILE        SBOM output file name for json and xml
+  -n PRODUCT_NAME       name of the product
+  -v PRODUCT_VERSION    product version string
+  -m MANUFACTURER_NAME  name of product manufacturer
+  -c CPE_INPUT_FILE     cpe file from make show-info
+```
+
+### Example
 
 By default, `manifest.csv` will be read from the current working directory
 and the resulting `bom.json` will also be created in the current working directory.  
 This can be overwritten as follows:
 
-```ShellSession
-
-  
-$ python3 generateBuildrootSBOM.py -i <path>/manifest.csv -n "My Project" -v "1.2.3.4" -m "company name" -c cpe.json
-      Usage:  generateBom.cli [OPTIONS]
-      Options:
-        -i <path> - filename of the output from make legal-info, example: manifest.csv
-        -o <path> - the bom file name to create
-        -n name of the project or product SBOM <project name in quotes>
-        -v your product SBOM version <project version in quotes>
-        -m SBOM manufacturer name
-        -c <path> - cpe file name resulting from Buildroot targets: "make show-info" or "make pkg-stats"
+```shell
+cyclonedx-buildroot -i <path>/manifest.csv -n "My Project" -v "1.2.3.4" -m "company name" -c cpe.json
 ```
+
+## Integration
 
 Diagram depicting where this project fits into the pipeline of secure development activities. Note that while the diagram depicts a linear sequence of
 activities, the entire sequence is typically cyclical. The end state of SBOM management receives the SBOM files for the product versions to properly
@@ -59,3 +96,4 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 [CDX_homepage]: https://cyclonedx.org
 [License]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/LICENSE
 [Buildroot_homepage]: https://buildroot.org
+[link_pypi]: https://pypi.org/project/CycloneDX-Buildroot/
