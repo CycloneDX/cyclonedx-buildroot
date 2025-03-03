@@ -1,0 +1,65 @@
+# encoding: utf-8
+
+name: Python CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    tags: [ 'v*' ]  # run again on release tags to have tools mark them
+    branches: [ 'main', 'next' ]
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION_DEFAULT: "3.12"
+  POETRY_VERSION: "2.1.1"
+
+jobs:
+  # coding-standards:
+    # TODO: run flake8
+
+  # static-code-analysis:
+    # TODO: run  mypy
+
+  # security-issues:
+    # TODO: run bandit
+
+  install-and-run:
+    name: install & run "${{matrix.command}}" (${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - generateBuildrootSBOM --help          # test entrypoint
+          - python -m cyclonedx_buildroot --help  # test module
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v4
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION_DEFAULT }}
+          architecture: 'x64'
+      - name: Install self
+        run: pip install .
+      - name: run command
+        run: ${{matrix.command}}
+
+  # build-and-test:
+    # TODO: run tests
+    # TODO: collect coverage reports
+    # TODO: collect test results
+
+  # report-coverage:
+    # TODO: publish coverage to codacy
