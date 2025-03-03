@@ -1,8 +1,0 @@
-# Default ignored files
-*.json
-*.xml
-.idea
-IOMT*
-__pycache__
-buildroot_IOT*
-venv
