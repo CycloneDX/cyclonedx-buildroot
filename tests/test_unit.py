@@ -25,4 +25,4 @@ class TestUtils(unittest.TestCase):
 
     def test_split_non_parenthesized(self):
         result = _split_non_parenthesized("aaa,bbb(ccc,ddd),eee", ",")
-        assert result == ['aaa', 'bbb(ccc,ddd)', 'eee']
+        self.assertListEqual(result, ['aaa', 'bbb(ccc,ddd)', 'eee'])
