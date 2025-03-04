@@ -15,3 +15,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
 
+
+# There is no stable/public API.
+# However, you might call the stable CLI instead, like so:
+#   from sys import executable
+#   from subprocess import run
+#   run((executable, '-m', 'cyclonedx_buildroot', '--help'))
