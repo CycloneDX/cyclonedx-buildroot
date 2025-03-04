@@ -109,3 +109,4 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 [License]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/LICENSE
 [Buildroot_homepage]: https://buildroot.org
 [link_pypi]: https://pypi.org/project/CycloneDX-Buildroot/
+[cyclonedx-library]: https://pypi.org/project/cyclonedx-python-lib
