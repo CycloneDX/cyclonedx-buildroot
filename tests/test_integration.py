@@ -1,22 +1,24 @@
 from os import chdir, getcwd
 from os.path import join
-from  tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory
 import unittest
 from shutil import copy
 
-from . import run_cli, DATA_DIR, TMP_DIR
+from tests import run_cli, DATA_DIR, TMP_DIR
 
 
 class TestRunCli(unittest.TestCase):
 
     def setUp(self):
         self.__original_cwd = getcwd()
-        self.__tempdir = TemporaryDirectory(prefix=f'{self.__class__.__name__}.', dir=TMP_DIR)
+        self.__tempdir = TemporaryDirectory(
+            prefix=f'{self.__class__.__name__}.{self._testMethodName}.',
+            dir=TMP_DIR, delete=True)
         chdir(self.__tempdir.name)
 
     def tearDown(self):
         chdir(self.__original_cwd)
-        # self.__tempdir.cleanup()
+        self.__tempdir.cleanup()
 
     def test_all_default_values(self):
         copy(join(DATA_DIR, "manifest.csv"), join(self.__tempdir.name, "manifest.csv"))
