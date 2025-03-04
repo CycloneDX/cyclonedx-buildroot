@@ -35,7 +35,8 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - generateBuildrootSBOM --help          # test entrypoint
+          - generateBuildrootSBOM --help          # test legacy entrypoint
+          - cyclonedx-buildroot --help            # test entrypoint
           - python -m cyclonedx_buildroot --help  # test module
         os:
           - ubuntu-latest
