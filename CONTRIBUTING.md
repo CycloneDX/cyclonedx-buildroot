@@ -58,3 +58,21 @@ Please follow these rules when writing a commit message:
   You can do this automatically by using git's `-s` flag (i.e., `git commit -s`).
 
 [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/) is a greate guide to writing good commit messages.
+
+## Setup
+
+This project uses [poetry]. Have it installed and setup first.
+
+To install dev-dependencies and tools:
+
+```shell
+poetry install
+```
+
+## Testing
+
+```shell
+poetry run python -m unittest discover -t . -s tests -v
+```
+
+[poetry]: https://python-poetry.org

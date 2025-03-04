@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # This file is part of CycloneDX Buildroot module.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +19,7 @@ import argparse
 import csv
 import json
 import os
+from typing import Optional, Sequence, Any, Union, NoReturn
 
 from cyclonedx.model.bom import Bom, BomMetaData
 # from something import BaseOutput
@@ -47,7 +46,7 @@ def _split_non_parenthesized(text, separator):
             current_fragment += c
             if c == ')' and parentheses_count > 0: parentheses_count -= 1
             if c == '(': parentheses_count += 1
-    
+
     fragments.append(current_fragment)
     return fragments
 
@@ -140,8 +139,9 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str):
     return retval
 
 
-def my_main(*args):
-    parser = argparse.ArgumentParser(description='CycloneDX BOM Generator')
+def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, NoReturn]:
+
+    parser = argparse.ArgumentParser(description='CycloneDX BOM Generator', **kwargs)
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv',
                         help='comma separated value (csv) file of buildroot manifest data')
     parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom',
@@ -153,11 +153,7 @@ def my_main(*args):
     parser.add_argument('-c', action='store', dest='cpe_input_file', default='unknown',
                         help='cpe file from make show-info')
 
-    if len(args) != 0:
-        unittest_args = list(args)
-        args = parser.parse_args(list(args))
-    else:
-        args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     print('Buildroot manifest input file: ' + args.input_file)
     print('Output SBOM: ' + args.output_file)
@@ -197,6 +193,4 @@ def my_main(*args):
     myxmldocfile.close()
     os.remove(args.output_file + ".one.xml")
 
-
-if __name__ == "__main__":
-    my_main()
+    return 0

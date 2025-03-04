@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # This file is part of CycloneDX-Buildroot
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,3 +15,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) OWASP Foundation. All Rights Reserved.
 
+
+import unittest
+
+from cyclonedx_buildroot._internal.cli import _split_non_parenthesized
+
+
+class TestUtils(unittest.TestCase):
+
+    def test_split_non_parenthesized(self):
+        result = _split_non_parenthesized("aaa,bbb(ccc,ddd),eee", ",")
+        self.assertListEqual(result, ['aaa', 'bbb(ccc,ddd)', 'eee'])
