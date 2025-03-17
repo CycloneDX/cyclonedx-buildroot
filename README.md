@@ -116,7 +116,7 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 [shield_groups]: https://img.shields.io/badge/discussion-groups.io-blue.svg "groups discussion"
 [shield_twitter-follow]: https://img.shields.io/badge/Twitter-follow-blue?logo=Twitter&logoColor=white "twitter follow"
 
-[link_pypi]: https://pypi.org/project/cyclonedx-bom/
+[link_pypi]: https://pypi.org/project/cyclonedx-buildroot/
 [link_gh-workflow-test]: https://github.com/CycloneDX/cyclonedx-buildroot/actions/workflows/python.yml?query=branch%3Amain
 [link_website]: https://cyclonedx.org/
 [link_slack]: https://cyclonedx.org/slack/invite
