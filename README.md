@@ -1,13 +1,14 @@
-[![Build Status](https://github.com/CycloneDX/cyclonedx-buildroot/workflows/CI/badge.svg)](https://github.com/CycloneDX/cyclonedx-buildroot/actions?workflow=CI)
-[![License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)][License]  
-[![Website](https://img.shields.io/badge/https://-cyclonedx.org-blue.svg)][CDX_homepage]
-[![Slack Invite](https://img.shields.io/badge/Slack-Join-blue?logo=slack&labelColor=393939)](https://cyclonedx.org/slack/invite)
-[![Group Discussion](https://img.shields.io/badge/discussion-groups.io-blue.svg)](https://groups.io/g/CycloneDX)
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/CycloneDX_Spec)
+# CycloneDX Buildroot
+
+[![shield_pypi-version]][link_pypi]
+[![shield_gh-workflow-test]][link_gh-workflow-test]
+[![shield_license]][license_file]  
+[![shield_website]][link_website]
+[![shield_slack]][link_slack]
+[![shield_groups]][link_discussion]
+[![shield_twitter-follow]][link_twitter]
 
 ----
-
-# CycloneDX Buildroot
 
 This [Buildroot][Buildroot_homepage] python application generates [CycloneDX][CDX_homepage] Software Bill of Materials 
 (SBOM) containing all direct dependencies of a Buildroot generated project.  
@@ -103,10 +104,29 @@ run((executable, '-m', 'cyclonedx_buildroot', '--help'))
 ## Copyright & License
 
 CycloneDX Buildroot is Copyright (c) OWASP Foundation. All Rights Reserved.  
-Permission to modify and redistribute is granted under the terms of the Apache 2.0 license. See the [LICENSE file][License] for the full license.
+Permission to modify and redistribute is granted under the terms of the Apache 2.0 license. See the [LICENSE file][license_file] for the full license.
+
+
+
+[shield_pypi-version]: https://img.shields.io/pypi/v/cyclonedx-buildroot?logo=Python&logoColor=white&label=PyPI "PyPI"
+[shield_gh-workflow-test]: https://img.shields.io/github/actions/workflow/status/CycloneDX/cyclonedx-buildroot/python.yml?branch=main&logo=GitHub&logoColor=white "build"
+[shield_license]: https://img.shields.io/github/license/CycloneDX/cyclonedx-buildroot?logo=open%20source%20initiative&logoColor=white "license"
+[shield_website]: https://img.shields.io/badge/https://-cyclonedx.org-blue.svg "homepage"
+[shield_slack]: https://img.shields.io/badge/slack-join-blue?logo=Slack&logoColor=white "slack join"
+[shield_groups]: https://img.shields.io/badge/discussion-groups.io-blue.svg "groups discussion"
+[shield_twitter-follow]: https://img.shields.io/badge/Twitter-follow-blue?logo=Twitter&logoColor=white "twitter follow"
+
+[link_pypi]: https://pypi.org/project/cyclonedx-bom/
+[link_gh-workflow-test]: https://github.com/CycloneDX/cyclonedx-buildroot/actions/workflows/python.yml?query=branch%3Amain
+[link_website]: https://cyclonedx.org/
+[link_slack]: https://cyclonedx.org/slack/invite
+[link_discussion]: https://groups.io/g/CycloneDX
+[link_twitter]: https://twitter.com/CycloneDX_Spec
+
 
 [CDX_homepage]: https://cyclonedx.org
-[License]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/LICENSE
 [Buildroot_homepage]: https://buildroot.org
-[link_pypi]: https://pypi.org/project/CycloneDX-Buildroot/
 [cyclonedx-library]: https://pypi.org/project/cyclonedx-python-lib
+
+[license_file]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/LICENSE
+[contributing_file]: https://github.com/CycloneDX/cyclonedx-python/blob/main/CONTRIBUTING.md
