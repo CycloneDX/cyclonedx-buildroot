@@ -129,4 +129,4 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 [cyclonedx-library]: https://pypi.org/project/cyclonedx-python-lib
 
 [license_file]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/LICENSE
-[contributing_file]: https://github.com/CycloneDX/cyclonedx-python/blob/main/CONTRIBUTING.md
+[contributing_file]: https://github.com/CycloneDX/cyclonedx-buildroot/blob/main/CONTRIBUTING.md
