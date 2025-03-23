@@ -76,7 +76,7 @@ jobs:
           - "3.11"
           - "3.10"
           - "3.9"
-          - "3.8"  # lowest supported
+          # - "3.8"  # lowest supported  << not supported by poetry 2
     steps:
       - name: Checkout
         # see https://github.com/actions/checkout
