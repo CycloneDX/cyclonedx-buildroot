@@ -6,11 +6,23 @@ authors = ["Robert Smigielski <ptdropper@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 packages = [
-    { include = "generateBuildrootSBOM.py" },
+    { include = "cyclonedx_buildroot" },
+]
+include = [
+    # all is an object -> prevent parse issue with dependabot
+    { path="README.md", format =["sdist"] },
+    { path="tests", format=["sdist"] },
+    # { path="CHANGELOG.md", format=["sdist"] },
+    # { path="docs", format=["sdist"] },
+]
+exclude = [
+    "**/.*", # exclude dotfiles and dotfolders
+    "docs/_build", "docs/processes",
 ]
 
 [tool.poetry.scripts]
-generateBuildrootSBOM = "generateBuildrootSBOM:my_main"
+cyclonedx-buildroot = "cyclonedx_buildroot._internal.cli:run"
+generateBuildrootSBOM = "cyclonedx_buildroot._internal.cli:run"  # for backwards compatibility
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.8"
