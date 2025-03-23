@@ -72,7 +72,7 @@ poetry install
 ## Testing
 
 ```shell
-poetry run python -m unittest discover -t . -s tests -v
+poetry run tox
 ```
 
 [poetry]: https://python-poetry.org
