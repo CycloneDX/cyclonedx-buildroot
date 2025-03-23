@@ -80,6 +80,8 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                     license_for_component=""
 
                 cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
+                if cpe_id_value == "":
+                    cpe_id_value = None
                 next_component = Component(name=row['PACKAGE'],
                                            type=ComponentType.FIRMWARE,
                                            licenses=license_for_component,
