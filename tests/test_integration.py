@@ -1,4 +1,3 @@
-import sys
 from os import chdir, getcwd
 from os.path import join
 from tempfile import TemporaryDirectory
