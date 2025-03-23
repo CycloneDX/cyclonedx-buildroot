@@ -21,7 +21,6 @@ from io import BytesIO, StringIO, TextIOWrapper
 from typing import Any, Optional
 from unittest.mock import patch
 from os.path import dirname, join
-from tempfile import TemporaryDirectory
 
 from cyclonedx_buildroot._internal.cli import run as _run_cli
 

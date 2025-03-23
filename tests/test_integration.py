@@ -1,3 +1,4 @@
+import sys
 from os import chdir, getcwd
 from os.path import join
 from tempfile import TemporaryDirectory
@@ -13,7 +14,7 @@ class TestRunCli(unittest.TestCase):
         self.__original_cwd = getcwd()
         self.__tempdir = TemporaryDirectory(
             prefix=f'{self.__class__.__name__}.{self._testMethodName}.',
-            dir=TMP_DIR, delete=True)
+            dir=TMP_DIR)
         chdir(self.__tempdir.name)
 
     def tearDown(self):
