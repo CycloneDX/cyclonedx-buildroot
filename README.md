@@ -28,10 +28,10 @@ Install this from [Python Package Index (PyPI)][link_pypi] using your preferred 
 install via one of commands:
 
 ```shell
-python -m pip install cyclonedx-buildroot   # install via pip
-pipx install cyclonedx-buildroot            # install via pipx
-poetry add cyclonedx-buildroot              # install via poetry
-uv tool install cyclonedx-buildroot         # install via uv
+python -m pip install CycloneDX-Buildroot   # install via pip
+pipx install CycloneDX-Buildroot            # install via pipx
+poetry add CycloneDX-Buildroot              # install via poetry
+uv tool install CycloneDX-Buildroot         # install via uv
 # ... you get the hang
 ````
 
