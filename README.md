@@ -2,6 +2,7 @@
 
 [![shield_pypi-version]][link_pypi]
 [![shield_gh-workflow-test]][link_gh-workflow-test]
+[![shield_coverage]][link_codacy]
 [![shield_license]][license_file]  
 [![shield_website]][link_website]
 [![shield_slack]][link_slack]
@@ -110,6 +111,7 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 
 [shield_pypi-version]: https://img.shields.io/pypi/v/cyclonedx-buildroot?logo=Python&logoColor=white&label=PyPI "PyPI"
 [shield_gh-workflow-test]: https://img.shields.io/github/actions/workflow/status/CycloneDX/cyclonedx-buildroot/python.yml?branch=main&logo=GitHub&logoColor=white "build"
+[shield_coverage]: https://img.shields.io/codacy/coverage/40c1cf5710b14d4d81f2b60b3609d998?logo=Codacy&logoColor=white "test coverage"
 [shield_license]: https://img.shields.io/github/license/CycloneDX/cyclonedx-buildroot?logo=open%20source%20initiative&logoColor=white "license"
 [shield_website]: https://img.shields.io/badge/https://-cyclonedx.org-blue.svg "homepage"
 [shield_slack]: https://img.shields.io/badge/slack-join-blue?logo=Slack&logoColor=white "slack join"
@@ -118,6 +120,7 @@ Permission to modify and redistribute is granted under the terms of the Apache 2
 
 [link_pypi]: https://pypi.org/project/cyclonedx-buildroot/
 [link_gh-workflow-test]: https://github.com/CycloneDX/cyclonedx-buildroot/actions/workflows/python.yml?query=branch%3Amain
+[link_codacy]: https://app.codacy.com/gh/CycloneDX/cyclonedx-buildroot
 [link_website]: https://cyclonedx.org/
 [link_slack]: https://cyclonedx.org/slack/invite
 [link_discussion]: https://groups.io/g/CycloneDX
