@@ -16,6 +16,8 @@ concurrency:
 env:
   PYTHON_VERSION_DEFAULT: "3.12"
   POETRY_VERSION: "2.1.1"
+  REPORTS_DIR: CI_reports
+  TESTS_REPORTS_ARTIFACT: tests-reports
 
 jobs:
   # coding-standards:
@@ -57,10 +59,83 @@ jobs:
       - name: run command
         run: ${{matrix.command}}
 
-  # build-and-test:
-    # TODO: run tests
-    # TODO: collect coverage reports
-    # TODO: collect test results
+  build-and-test:
+    name: Test (${{ matrix.os }} py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-13  # macos-latest might be incompatible to py38 - see https://github.com/CycloneDX/cyclonedx-python-lib/pull/599#issuecomment-2077462142
+          - windows-latest
+        python-version:
+          - "3.13" # highest supported
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          - "3.9"
+          - "3.8"  # lowest supported
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v4
+      - name: Create reports directory
+        run: mkdir ${{ env.REPORTS_DIR }}
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Install poetry
+        # see https://github.com/marketplace/actions/setup-poetry
+        uses: Gr1N/setup-poetry@v9
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Install dependencies
+        run: poetry install --no-root
+      - name: Ensure build successful
+        run: poetry build
+      - name: Run tox
+        run: poetry run tox r -e py -s false
+      - name: Generate coverage reports
+        if: ${{ failure() || success() }}
+        shell: bash
+        run: |
+          set -eux
+          poetry run coverage report -m
+          poetry run coverage xml -o '${{ env.REPORTS_DIR }}/coverage/${{ matrix.os }}_${{ matrix.python-version }}.cobertura.xml'
+      - name: Artifact reports
+        if: ${{ ! cancelled() }}
+        # see https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ env.TESTS_REPORTS_ARTIFACT }}_bnt_${{ matrix.os }}_py${{ matrix.python-version }}'
+          path: ${{ env.REPORTS_DIR }}
+          if-no-files-found: error
 
-  # report-coverage:
-    # TODO: publish coverage to codacy
+  report-coverage:
+    name: Publish test coverage
+    needs: [ "build-and-test" ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: fetch test artifacts
+        # see https://github.com/actions/download-artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '${{ env.TESTS_REPORTS_ARTIFACT }}_bnt_*'
+          merge-multiple: true
+          path: ${{ env.REPORTS_DIR }}
+      - name: Run codacy-coverage-reporter
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        ## see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-secrets
+        if: ${{ env.CODACY_PROJECT_TOKEN != '' }}
+        # see https://github.com/codacy/codacy-coverage-reporter-action
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ env.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ${{ env.REPORTS_DIR }}/coverage/*
