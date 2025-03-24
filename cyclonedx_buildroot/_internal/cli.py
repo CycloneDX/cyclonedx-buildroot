@@ -128,8 +128,8 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
     for cpe_key, cpe_value in cpe_data.items():
         try:
             # noinspection PyTypeChecker
-            sw_object = dict(cpe_data[cpe_key])
-            if sw_object['name'] == sw_component_name:
+            sw_object = cpe_data[cpe_key]
+            if isinstance(sw_object, dict) and sw_object['name'] == sw_component_name:
                 retval = sw_object['cpe-id']
                 return retval
         except KeyError:
