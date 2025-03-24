@@ -23,8 +23,39 @@ jobs:
   # coding-standards:
     # TODO: run flake8
 
-  # static-code-analysis:
-    # TODO: run  mypy
+  static-code-analysis:
+    name: StaticCodingAnalysis (py${{ matrix.python-version}} ${{ matrix.toxenv-factors }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: '3.13'  # latest
+            os: ubuntu-latest
+            toxenv-factors: '-current'
+          - python-version: '3.8'   # lowest
+            os: ubuntu-latest
+            toxenv-factors: '-lowest'
+    steps:
+      - name: Checkout
+        # see https://github.com/actions/checkout
+        uses: actions/checkout@v4
+      - name: Setup Python Environment
+        # see https://github.com/actions/setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Install poetry
+        # see https://github.com/marketplace/actions/setup-poetry
+        uses: Gr1N/setup-poetry@v9
+        with:
+          poetry-version: ${{ env.POETRY_VERSION }}
+      - name: Install dependencies
+        run: poetry install --no-root
+      - name: Run tox
+        run: poetry run tox r -e mypy${{ matrix.toxenv-factors }} -s false
 
   # security-issues:
     # TODO: run bandit
