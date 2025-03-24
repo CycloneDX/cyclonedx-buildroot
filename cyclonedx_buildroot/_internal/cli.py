@@ -19,7 +19,7 @@ import argparse
 import csv
 import json
 import os
-from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING, Dict
+from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
