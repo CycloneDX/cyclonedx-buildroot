@@ -22,7 +22,6 @@ import os
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
-# from something import BaseOutput
 from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
@@ -32,6 +31,8 @@ from xml.dom import minidom
 from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
+from cyclonedx.model.contact import OrganizationalEntity
+
 
 if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
@@ -173,11 +174,10 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     br_bom = Bom()
     br_bom.metadata.component = rootComponent = Component(name=args.product_name,
                                                           version=args.product_version)
-    #br_meta = BomMetaData(manufacture=args.manufacturer_name,
-    #                      component=rootComponent)
-
-    # TODO: issue with xml manufacture handling
-    br_meta = BomMetaData(component=rootComponent)
+    # TODO Specification 1.6 ends support of "manufacture". Remove in future release.
+    br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
+                          manufacturer=OrganizationalEntity(name=args.manufacturer_name),
+                          component=rootComponent)
 
     br_bom.metadata = br_meta
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
