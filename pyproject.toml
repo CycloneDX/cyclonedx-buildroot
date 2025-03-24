@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "CycloneDX-Buildroot"
-version = "1.1.0"
+version = "testing_1.2.0a0"
 description = "Create a software bill of materials from the direct dependencies of a Buildroot generated project"
 authors = ["Robert Smigielski <ptdropper@gmail.com>"]
 license = "Apache-2.0"
