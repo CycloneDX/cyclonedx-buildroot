@@ -34,7 +34,8 @@ jobs:
           - python-version: '3.13'  # latest
             os: ubuntu-latest
             toxenv-factors: '-current'
-          - python-version: '3.8'   # lowest
+          - # python-version: '3.8'   # lowest supported  << not supported by poetry 2
+            python-version: '3.9'
             os: ubuntu-latest
             toxenv-factors: '-lowest'
     steps:
