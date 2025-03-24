@@ -27,7 +27,7 @@ from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
 from json import loads as json_loads
-from defusedxml.minidom import parseString as  minidom_parseString
+from defusedxml.minidom import parseString as minidom_parseString  # type: ignore
 from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
