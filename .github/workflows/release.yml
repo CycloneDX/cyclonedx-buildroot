@@ -14,6 +14,7 @@ env:
   DIST_ARTIFACT: python-dist
   PYTHON_VERSION_DEFAULT: "3.12"
   POETRY_VERSION: "2.1.1"
+  REPORTS_DIR: CI_reports
 
 jobs:
   quicktest:
@@ -35,7 +36,8 @@ jobs:
           poetry-version: ${{ env.POETRY_VERSION }}
       - name: Install dependencies
         run: poetry install --no-root
-      # TODO: run tests
+      - name: Run tox
+        run: poetry run tox run -e py -s false
 
   release-PyPI:
     outputs:
