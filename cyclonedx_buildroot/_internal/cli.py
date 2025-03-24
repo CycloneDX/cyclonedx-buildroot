@@ -19,7 +19,7 @@ import argparse
 import csv
 import json
 import os
-from typing import Optional, Sequence, Any, Union, NoReturn
+from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
 # from something import BaseOutput
@@ -29,12 +29,15 @@ from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
 from json import loads as json_loads
 from xml.dom import minidom
-from cyclonedx.factory.license import InvalidLicenseExpressionException, InvalidSpdxLicenseException
+from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
 
+if TYPE_CHECKING:
+    from cyclonedx.output.xml import Xml as XmlOutputter
+
 # Splits a string by the given separator character except inside parentheses.
-def _split_non_parenthesized(text, separator):
+def _split_non_parenthesized(text: str, separator: str) -> List[str]:
     fragments = []
     current_fragment = ''
     parentheses_count = 0
@@ -55,8 +58,11 @@ def _split_non_parenthesized(text, separator):
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
 # noinspection PyTypeChecker
-def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom):
-    br_bom_local: Bom = br_bom
+def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom) -> Bom:
+    br_bom_local = br_bom
+    root_component = br_bom.metadata.component
+    assert root_component is not None
+
     #
     # Capture the components that describe the complete inventory of first-party software
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
@@ -77,9 +83,9 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                 try:
                     license_for_component = [lfac.make_with_expression(license_string)]
                 except InvalidLicenseExpressionException:
-                    license_for_component=""
+                    license_for_component = []
 
-                cpe_id_value = get_cpe_value(cpe_file_name, row['PACKAGE'])
+                cpe_id_value: Optional[str] = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 if cpe_id_value == "":
                     cpe_id_value = None
                 next_component = Component(name=row['PACKAGE'],
@@ -91,7 +97,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
                                            bom_ref=row['PACKAGE'])
 
                 br_bom_local.components.add(next_component)
-                br_bom_local.register_dependency(br_bom.metadata.component, [next_component])
+                br_bom_local.register_dependency(root_component, [next_component])
             except KeyError:
                 print("The input file header does not contain the expected data in the first row of the file.")
                 print(
@@ -111,7 +117,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 #
 # input : name of the software component
 # output: returns the cpe value
-def get_cpe_value(cpe_file_name: str, sw_component_name: str):
+def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
     retval = ""
     if cpe_file_name == "unknown":
         return retval
@@ -184,7 +190,7 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     # Produce the output in XML format that is in a one-line format.
     my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_4)
-    serialized_xml = my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
+    my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
     myxmldocfile = open((args.output_file + ".one.xml"))
