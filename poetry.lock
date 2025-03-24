@@ -135,20 +135,20 @@ toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "8.0.0"
+version = "9.1.0"
 description = "Python library for CycloneDX"
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "cyclonedx_python_lib-8.0.0-py3-none-any.whl", hash = "sha256:623adb9e50ba2ac60ba9014ed9d6e8c4c6ae647bae0d72a721076c043cf262ba"},
-    {file = "cyclonedx_python_lib-8.0.0.tar.gz", hash = "sha256:61d11ed58d0515fd854dc1713073e63de41bc67e5eb83db001240166869bfb5a"},
+    {file = "cyclonedx_python_lib-9.1.0-py3-none-any.whl", hash = "sha256:55693fca8edaecc3363b24af14e82cc6e659eb1e8353e58b587c42652ce0fb52"},
+    {file = "cyclonedx_python_lib-9.1.0.tar.gz", hash = "sha256:86935f2c88a7b47a529b93c724dbd3e903bc573f6f8bd977628a7ca1b5dadea1"},
 ]
 
 [package.dependencies]
 license-expression = ">=30,<31"
 packageurl-python = ">=0.11,<2"
-py-serializable = ">=1.1.1,<2.0.0"
+py-serializable = ">=2.0.0,<3.0.0"
 sortedcontainers = ">=2.4.0,<3.0.0"
 
 [package.extras]
@@ -353,14 +353,14 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "py-serializable"
-version = "1.1.2"
+version = "2.0.0"
 description = "Library for serializing and deserializing Python Objects to and from JSON and XML."
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "py_serializable-1.1.2-py3-none-any.whl", hash = "sha256:801be61b0a1ba64c3861f7c624f1de5cfbbabf8b458acc9cdda91e8f7e5effa1"},
-    {file = "py_serializable-1.1.2.tar.gz", hash = "sha256:89af30bc319047d4aa0d8708af412f6ce73835e18bacf1a080028bb9e2f42bdb"},
+    {file = "py_serializable-2.0.0-py3-none-any.whl", hash = "sha256:1721e4c0368adeec965c183168da4b912024702f19e15e13f8577098b9a4f8fe"},
+    {file = "py_serializable-2.0.0.tar.gz", hash = "sha256:e9e6491dd7d29c31daf1050232b57f9657f9e8a43b867cca1ff204752cf420a5"},
 ]
 
 [package.dependencies]
@@ -505,4 +505,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = "<4.0,>=3.8"
-content-hash = "23884301799d21d4b1ce5c2049e0fc7837811892fb635ad79ebff47d7964e9b9"
+content-hash = "3d28e47c5c6846d4f2aba9acd7d6a1657a8d4e7502b635dcdffe5b1539a2d27b"
