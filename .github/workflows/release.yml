@@ -18,6 +18,7 @@ env:
 
 jobs:
   quicktest:
+    name: quick test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,20 +40,14 @@ jobs:
       - name: Run tox
         run: poetry run tox run -e py -s false
 
-  release-PyPI:
+  build:
+    name: build
     outputs:
-      released: ${{ steps.release.outputs.released }}   # "true" if a release was made, "false" otherwise
-      version:  ${{ steps.release.outputs.version  }}   # The newly released version if one was made, otherwise the current version
-      tag:      ${{ steps.release.outputs.tag      }}   # The Git tag corresponding to the version output
+      version:  ${{ steps.version.outputs.version }}
+      prerelease:  ${{ steps.version.outputs.prerelease }}
     needs:
       - quicktest
     runs-on: ubuntu-latest
-    permissions:
-      # NOTE: this enables trusted publishing.
-      # See https://github.com/pypa/gh-action-pypi-publish/tree/release/v1#trusted-publishing
-      # and https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/
-      id-token: write
-      contents: write
     steps:
       - name: Checkout code
         # see https://github.com/actions/checkout
@@ -75,8 +70,93 @@ jobs:
           installer-parallel: true
       - name: Install dependencies
         run: poetry install --no-root
-      - name: View poetry version
-        run: poetry --version
-      # TODO: build package
-      # TODO: publish package to PyPI
-      # TODO: publish package GitHub releases
+      - name: build package
+        run: poetry build
+      - name: get package version
+        id: version
+        run: |-
+          set -eu
+          PACKAGE_VERSION="$(poetry version --short)"
+          echo "version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$PACKAGE_VERSION" =~ (dev|a|b|rc) ]]
+          then
+            echo "prerelease=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=0" >> "$GITHUB_OUTPUT"
+          fi
+      - name: artifact build results
+        # see https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+          if-no-files-found: error
+          retention-days: 3
+
+  release-PyPI:
+    name: release on PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://test.pypi.org/p/CycloneDX-Buildroot
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    steps:
+      - name: Download all the dists
+        # see https://github.com/actions/upload-artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish package distributions to TestPyPI
+        # see https://github.com/pypa/gh-action-pypi-publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
+          repository-url: https://test.pypi.org/legacy/
+      - name: artifact release assets
+        # see https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-released
+          path: dist/
+          if-no-files-found: error
+          retention-days: 3
+
+  release-GitHub:
+    name: release on GitHub
+    needs:
+      - build
+      - release-PyPI
+    runs-on: ubuntu-latest
+    env:
+      TAG: v${{ needs.build.outputs.version }}
+      PRERELEASE: ${{ needs.build.outputs.prerelease }}
+    permissions:
+      contents: write  # IMPORTANT: mandatory for making GitHub Releases
+    steps:
+      - name: Download all the release assets
+        # see https://github.com/actions/upload-artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-released
+          path: dist/
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |-
+          set -eu
+          prerelease=''
+          if [[ "$PRERELEASE" == "1" ]]
+          then
+            prerelease='--prerelease'
+          fi
+          gh release create \
+          --repo "$GITHUB_REPOSITORY" \
+          --title "$TAG" \
+          --notes "" \
+          $prerelease \
+          "$TAG" \
+          dist/**
