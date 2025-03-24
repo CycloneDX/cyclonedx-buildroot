@@ -19,7 +19,7 @@ import argparse
 import csv
 import json
 import os
-from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
+from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING, Dict
 
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
@@ -27,7 +27,7 @@ from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
 from json import loads as json_loads
-from xml.dom import minidom
+from defusedxml.minidom import parseString as  minidom_parseString
 from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
@@ -122,29 +122,28 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
     retval = ""
     if cpe_file_name == "unknown":
         return retval
-    cpe_file = open(cpe_file_name)
-    cpe_data = dict(json.load(cpe_file))
+    with open(cpe_file_name) as cpe_file:
+        cpe_data = json.load(cpe_file)
+    assert isinstance(cpe_data, dict)
     for cpe_key, cpe_value in cpe_data.items():
         try:
             # noinspection PyTypeChecker
             sw_object = dict(cpe_data[cpe_key])
             if sw_object['name'] == sw_component_name:
                 retval = sw_object['cpe-id']
-                cpe_file.close()
                 return retval
-        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
+        except KeyError:
+            # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
         try:
             # "make pkg-stats"
             if sw_component_name in cpe_value:
                 sw_object = cpe_value[sw_component_name]
                 retval = sw_object['cpeid']
-                cpe_file.close()
                 return retval
-        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
+        except KeyError:
+            # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
-
-    cpe_file.close()
     return retval
 
 
@@ -194,7 +193,7 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     # Produce the output in XML format that is indented format.
     myxmldocfile = open((args.output_file + ".one.xml"))
-    myxmldoc = minidom.parseString(myxmldocfile.read())
+    myxmldoc = minidom_parseString(myxmldocfile.read())
     outputfile = open(args.output_file + ".xml", mode='w')
     print(myxmldoc.toprettyxml(), file=outputfile)
     outputfile.close()
