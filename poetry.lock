@@ -290,14 +290,14 @@ files = [
 
 [[package]]
 name = "packageurl-python"
-version = "0.14.0"
+version = "0.16.0"
 description = "A purl aka. Package URL parser and builder"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "packageurl-python-0.14.0.tar.gz", hash = "sha256:ff09147cddaae9e5c59ffcb12df8ec0e1b774b45099399f28c36b1a3dfdf52e2"},
-    {file = "packageurl_python-0.14.0-py3-none-any.whl", hash = "sha256:cf5e55cdcd61e6de858f47c4986aa87ba493bfa56ba58de11103dfdc2c00e4e1"},
+    {file = "packageurl_python-0.16.0-py3-none-any.whl", hash = "sha256:5c3872638b177b0f1cf01c3673017b7b27ebee485693ae12a8bed70fa7fa7c35"},
+    {file = "packageurl_python-0.16.0.tar.gz", hash = "sha256:69e3bf8a3932fe9c2400f56aaeb9f86911ecee2f9398dbe1b58ec34340be365d"},
 ]
 
 [package.extras]
@@ -505,4 +505,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = "<4.0,>=3.8"
-content-hash = "9148149ffee1973c12a8def2889ae8354e2c397e46f3d82678c6814a068408c4"
+content-hash = "c508780aff3104e445cca33178d4849aa4a53548066ee7fe470d529c5c57c9ec"
