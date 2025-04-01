@@ -174,9 +174,8 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     br_bom = Bom()
     br_bom.metadata.component = rootComponent = Component(name=args.product_name,
                                                           version=args.product_version)
-    # TODO Specification 1.6 ends support of "manufacture". Remove in future release.
-    br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
-                          manufacturer=OrganizationalEntity(name=args.manufacturer_name),
+
+    br_meta = BomMetaData(manufacturer=OrganizationalEntity(name=args.manufacturer_name),
                           component=rootComponent)
 
     br_bom.metadata = br_meta
@@ -184,12 +183,12 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     # Produce the output in pretty JSON format.
     outputfile = open((args.output_file + ".json"), mode='w')
-    bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_4](br_bom).output_as_string(indent=3)
+    bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
     json.dump(json.loads(bom_json), outputfile, indent=3)
     outputfile.close()
 
     # Produce the output in XML format that is in a one-line format.
-    my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_4)
+    my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
     my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.

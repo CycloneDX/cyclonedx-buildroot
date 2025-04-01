@@ -27,7 +27,7 @@ generateBuildrootSBOM = "cyclonedx_buildroot._internal.cli:run"  # for backwards
 [tool.poetry.dependencies]
 python = "<4.0,>=3.8"
 packageurl-python = "0.14.0"
-cyclonedx-python-lib = "8.0.0"
+cyclonedx-python-lib = "8.5.0"
 
 [tool.poetry.group.dev.dependencies]
 # pin to exact versions, if the tool/lib/plugin is process-relevant
