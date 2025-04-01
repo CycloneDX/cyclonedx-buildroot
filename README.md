@@ -88,7 +88,7 @@ Use the latest possible version of this module that is compatible with the Cyclo
 
 | Version | Schema Version | Format(s) |
 |---------|----------------|-----------|
-| 1.0x | CycloneDX v1.4 | XML/JSON |
+| 1.2.x   | CycloneDX v1.6 | XML/JSON |
 
 ## Internals
 
