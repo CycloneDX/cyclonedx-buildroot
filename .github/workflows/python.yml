@@ -8,6 +8,10 @@ on:
   push:
     tags: [ 'v*' ]  # run again on release tags to have tools mark them
     branches: [ 'main', 'next' ]
+  schedule:
+    # schedule daily tests, since some dependencies are not intended to be pinned
+    # this means: at 23:42 every day
+    - cron: '42 23 * * *'
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.ref }}'
