@@ -135,14 +135,14 @@ toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "8.5.0"
+version = "8.0.0"
 description = "Python library for CycloneDX"
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "cyclonedx_python_lib-8.5.0-py3-none-any.whl", hash = "sha256:a6b6d04295cdbee27c4b8d618ba2c1c7bbd535b9666cc36b05e9d6408751a829"},
-    {file = "cyclonedx_python_lib-8.5.0.tar.gz", hash = "sha256:35f7a139042e4df17ff414fa228cec83c7e4e493bdec990847357791ca72f3a5"},
+    {file = "cyclonedx_python_lib-8.0.0-py3-none-any.whl", hash = "sha256:623adb9e50ba2ac60ba9014ed9d6e8c4c6ae647bae0d72a721076c043cf262ba"},
+    {file = "cyclonedx_python_lib-8.0.0.tar.gz", hash = "sha256:61d11ed58d0515fd854dc1713073e63de41bc67e5eb83db001240166869bfb5a"},
 ]
 
 [package.dependencies]
@@ -290,14 +290,14 @@ files = [
 
 [[package]]
 name = "packageurl-python"
-version = "0.14.0"
+version = "0.16.0"
 description = "A purl aka. Package URL parser and builder"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "packageurl-python-0.14.0.tar.gz", hash = "sha256:ff09147cddaae9e5c59ffcb12df8ec0e1b774b45099399f28c36b1a3dfdf52e2"},
-    {file = "packageurl_python-0.14.0-py3-none-any.whl", hash = "sha256:cf5e55cdcd61e6de858f47c4986aa87ba493bfa56ba58de11103dfdc2c00e4e1"},
+    {file = "packageurl_python-0.16.0-py3-none-any.whl", hash = "sha256:5c3872638b177b0f1cf01c3673017b7b27ebee485693ae12a8bed70fa7fa7c35"},
+    {file = "packageurl_python-0.16.0.tar.gz", hash = "sha256:69e3bf8a3932fe9c2400f56aaeb9f86911ecee2f9398dbe1b58ec34340be365d"},
 ]
 
 [package.extras]
@@ -443,18 +443,18 @@ files = [
 
 [[package]]
 name = "tox"
-version = "4.24.1"
+version = "4.25.0"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "tox-4.24.1-py3-none-any.whl", hash = "sha256:57ba7df7d199002c6df8c2db9e6484f3de6ca8f42013c083ea2d4d1e5c6bdc75"},
-    {file = "tox-4.24.1.tar.gz", hash = "sha256:083a720adbc6166fff0b7d1df9d154f9d00bfccb9403b8abf6bc0ee435d6a62e"},
+    {file = "tox-4.25.0-py3-none-any.whl", hash = "sha256:4dfdc7ba2cc6fdc6688dde1b21e7b46ff6c41795fb54586c91a3533317b5255c"},
+    {file = "tox-4.25.0.tar.gz", hash = "sha256:dd67f030317b80722cf52b246ff42aafd3ed27ddf331c415612d084304cf5e52"},
 ]
 
 [package.dependencies]
-cachetools = ">=5.5"
+cachetools = ">=5.5.1"
 chardet = ">=5.2"
 colorama = ">=0.4.6"
 filelock = ">=3.16.1"
@@ -462,12 +462,12 @@ packaging = ">=24.2"
 platformdirs = ">=4.3.6"
 pluggy = ">=1.5"
 pyproject-api = ">=1.8"
-tomli = {version = ">=2.1", markers = "python_version < \"3.11\""}
+tomli = {version = ">=2.2.1", markers = "python_version < \"3.11\""}
 typing-extensions = {version = ">=4.12.2", markers = "python_version < \"3.11\""}
-virtualenv = ">=20.27.1"
+virtualenv = ">=20.29.1"
 
 [package.extras]
-test = ["devpi-process (>=1.0.2)", "pytest (>=8.3.3)", "pytest-mock (>=3.14)"]
+test = ["devpi-process (>=1.0.2)", "pytest (>=8.3.4)", "pytest-mock (>=3.14)"]
 
 [[package]]
 name = "typing-extensions"
@@ -504,5 +504,5 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [metadata]
 lock-version = "2.1"
-python-versions = "<4.0,>=3.8"
-content-hash = "c3071a17b80ab786fd459463267bf6af045c35878f492093d6227b7a8f3fd820"
+python-versions = "^3.8"
+content-hash = "3116af1d2d2c2b4e98a14b7acc6f92a78b550dae443e0bdb22e903a724b5a491"
