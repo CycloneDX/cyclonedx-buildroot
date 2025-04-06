@@ -22,13 +22,12 @@ import os
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
-from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
+from cyclonedx.output.json import BY_SCHEMA_VERSION
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
-from json import loads as json_loads
 from xml.dom import minidom
-from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
+from cyclonedx.exception.factory import InvalidLicenseExpressionException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
 from cyclonedx.model.contact import OrganizationalEntity
@@ -69,9 +68,9 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
     # the resulting JSON. Use a try/except block to help with run time issues.
     with open(input_file_name, newline='') as csvfile:
-        sheetX = csv.DictReader(csvfile)
+        spread_sheet = csv.DictReader(csvfile)
 
-        for row in sheetX:
+        for row in spread_sheet:
             try:
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
@@ -79,6 +78,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
+                # TODO license_list not used something is wrong.
                 license_list = _split_non_parenthesized(license_string, ",")
 
                 try:
