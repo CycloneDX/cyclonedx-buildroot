@@ -115,7 +115,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           attestations: true
-          repository-url: https://pypi.org/legacy/
+          # repository-url: https://test.pypi.org/legacy/  # uncomment to force upload to test-env
       - name: artifact release assets
         # see https://github.com/actions/upload-artifact
         uses: actions/upload-artifact@v4
