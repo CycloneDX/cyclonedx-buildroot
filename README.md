@@ -11,12 +11,19 @@
 
 ----
 
-This [Buildroot][Buildroot_homepage] python application generates [CycloneDX][CDX_homepage] Software Bill of Materials 
-(SBOM) containing all direct dependencies of a Buildroot generated project.  
+This python application generates [CycloneDX][CDX_homepage] Software Bill of Materials
+(SBOM) containing all direct dependencies of a [Buildroot][Buildroot_homepage] generated project.
+It also supports projects that provide a comma-separated-values (.csv) file as a manifest of the software bill of materials.
+Thus an embedded project or any other project that has a CSV file containing the column information below, can be used with this project.
+
+  PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
+
+
 OWASP CycloneDX is a full-stack Bill of Materials (BOM) standard that provides advanced supply chain capabilities for 
 cyber risk reduction.
 Buildroot provides a build target named "legal-info" which produces a set of files including manifest.csv. The legal-info
-is a general "make" target for a Buildroot project.
+is a general "make" target for a Buildroot project. Additionally and optionally Buildroot supports a "make" target named
+"show-info" to produce CPE data for your build.
 
 ## Requirements
 
@@ -43,6 +50,8 @@ Call via one of commands:
 ```shell
 cyclonedx-buildroot            # call script
 python -m cyclonedx_buildroot  # call python module CLI
+run((executable, '-m', 'cyclonedx_buildroot', "-i", "../tests/_data/manifest.csv", "-n", "My Project", "-v", "1.2.3.4", "-m", "company name"))
+
 ```
 
 ### Help page
@@ -70,7 +79,7 @@ and the resulting `bom.json` will also be created in the current working directo
 This can be overwritten as follows:
 
 ```shell
-cyclonedx-buildroot -i <path>/manifest.csv -n "My Project" -v "1.2.3.4" -m "company name" -c cpe.json
+cyclonedx-buildroot -i <path>/manifest.csv -n "My Project" -v "1.2.3.4" -m "your manufacturing company name" -c cpe.json
 ```
 
 ## Integration
@@ -88,7 +97,7 @@ Use the latest possible version of this module that is compatible with the Cyclo
 
 | Version | Schema Version | Format(s) |
 |---------|----------------|-----------|
-| 1.0x | CycloneDX v1.4 | XML/JSON |
+| 2.0     | CycloneDX v1.6 | XML/JSON |
 
 ## Internals
 

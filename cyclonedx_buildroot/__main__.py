@@ -23,7 +23,7 @@ __all__ = [  # type:ignore[var-annotated]
     #   run((executable, '-m', 'cyclonedx_buildroot', '--help'))
 ]
 
-from ._internal.cli import run as _run
+from cyclonedx_buildroot._internal.cli import run as _run
 
 exit(_run(prog=f'python -m {__package__}' if __package__ else None))
 

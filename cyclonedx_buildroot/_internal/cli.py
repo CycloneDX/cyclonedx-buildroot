@@ -22,13 +22,12 @@ import os
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
-from cyclonedx.output.json import BY_SCHEMA_VERSION, Json
+from cyclonedx.output.json import BY_SCHEMA_VERSION
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
-from json import loads as json_loads
 from xml.dom import minidom
-from cyclonedx.exception.factory import InvalidLicenseExpressionException, InvalidSpdxLicenseException
+from cyclonedx.exception.factory import InvalidLicenseExpressionException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
 from cyclonedx.model.contact import OrganizationalEntity
@@ -69,9 +68,9 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
     # the resulting JSON. Use a try/except block to help with run time issues.
     with open(input_file_name, newline='') as csvfile:
-        sheetX = csv.DictReader(csvfile)
+        spread_sheet = csv.DictReader(csvfile)
 
-        for row in sheetX:
+        for row in spread_sheet:
             try:
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
@@ -79,6 +78,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
+                # TODO license_list not used something is wrong.
                 license_list = _split_non_parenthesized(license_string, ",")
 
                 try:
@@ -172,24 +172,21 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     print('Buildroot cpe input file: ' + args.cpe_input_file)
 
     br_bom = Bom()
-    br_bom.metadata.component = rootComponent = Component(name=args.product_name,
-                                                          version=args.product_version)
-    # TODO Specification 1.6 ends support of "manufacture". Remove in future release.
-    br_meta = BomMetaData(manufacture=OrganizationalEntity(name=args.manufacturer_name),
-                          manufacturer=OrganizationalEntity(name=args.manufacturer_name),
-                          component=rootComponent)
+    br_bom.metadata = BomMetaData(
+        manufacturer=OrganizationalEntity(name=args.manufacturer_name),
+        component=Component(name=args.product_name, version=args.product_version)
+    )
 
-    br_bom.metadata = br_meta
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
     outputfile = open((args.output_file + ".json"), mode='w')
-    bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_4](br_bom).output_as_string(indent=3)
+    bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
     json.dump(json.loads(bom_json), outputfile, indent=3)
     outputfile.close()
 
     # Produce the output in XML format that is in a one-line format.
-    my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_4)
+    my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
     my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
