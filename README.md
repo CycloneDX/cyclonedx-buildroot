@@ -50,8 +50,6 @@ Call via one of commands:
 ```shell
 cyclonedx-buildroot            # call script
 python -m cyclonedx_buildroot  # call python module CLI
-run((executable, '-m', 'cyclonedx_buildroot', "-i", "../tests/_data/manifest.csv", "-n", "My Project", "-v", "1.2.3.4", "-m", "company name"))
-
 ```
 
 ### Help page
