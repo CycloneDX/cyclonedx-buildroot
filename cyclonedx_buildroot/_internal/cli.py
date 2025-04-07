@@ -172,13 +172,11 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     print('Buildroot cpe input file: ' + args.cpe_input_file)
 
     br_bom = Bom()
-    br_bom.metadata.component = rootComponent = Component(name=args.product_name,
-                                                          version=args.product_version)
+    br_bom.metadata = BomMetaData(
+        manufacturer=OrganizationalEntity(name=args.manufacturer_name),
+        component=Component(name=args.product_name, version=args.product_version)
+    )
 
-    br_meta = BomMetaData(manufacturer=OrganizationalEntity(name=args.manufacturer_name),
-                          component=rootComponent)
-
-    br_bom.metadata = br_meta
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
