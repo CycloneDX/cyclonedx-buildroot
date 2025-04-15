@@ -63,7 +63,7 @@ generateBuildrootSBOM = "cyclonedx_buildroot._internal.cli:run"  # for backwards
 [tool.poetry.dependencies]
 python = "^3.8"
 packageurl-python = ">=0.16, <2"
-cyclonedx-python-lib = "^8.5.0"
+cyclonedx-python-lib = ">=8.5,<10.0"
 defusedxml = "^0.7.1"
 
 [tool.poetry.group.dev.dependencies]
