@@ -26,7 +26,7 @@ from cyclonedx.output.json import BY_SCHEMA_VERSION
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
-from xml.dom import minidom
+from defusedxml.minidom import parseString as minidom_parseString  # type: ignore
 from cyclonedx.exception.factory import InvalidLicenseExpressionException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
@@ -122,29 +122,28 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
     retval = ""
     if cpe_file_name == "unknown":
         return retval
-    cpe_file = open(cpe_file_name)
-    cpe_data = dict(json.load(cpe_file))
+    with open(cpe_file_name) as cpe_file:
+        cpe_data = json.load(cpe_file)
+    assert isinstance(cpe_data, dict)
     for cpe_key, cpe_value in cpe_data.items():
         try:
             # noinspection PyTypeChecker
-            sw_object = dict(cpe_data[cpe_key])
-            if sw_object['name'] == sw_component_name:
+            sw_object = cpe_data[cpe_key]
+            if isinstance(sw_object, dict) and sw_object['name'] == sw_component_name:
                 retval = sw_object['cpe-id']
-                cpe_file.close()
                 return retval
-        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
+        except KeyError:
+            # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
         try:
             # "make pkg-stats"
             if sw_component_name in cpe_value:
                 sw_object = cpe_value[sw_component_name]
                 retval = sw_object['cpeid']
-                cpe_file.close()
                 return retval
-        except:  # Some entries do not have a "name" key and no "cpe-id" so skip these.
+        except KeyError:
+            # Some entries do not have a "name" key and no "cpe-id" so skip these.
             pass
-
-    cpe_file.close()
     return retval
 
 
@@ -180,22 +179,19 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
-    outputfile = open((args.output_file + ".json"), mode='w')
     bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
-    json.dump(json.loads(bom_json), outputfile, indent=3)
-    outputfile.close()
+    with open((args.output_file + ".json"), mode='w') as outputfile:
+        json.dump(json.loads(bom_json), outputfile, indent=3)
 
     # Produce the output in XML format that is in a one-line format.
     my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
     my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
 
     # Produce the output in XML format that is indented format.
-    myxmldocfile = open((args.output_file + ".one.xml"))
-    myxmldoc = minidom.parseString(myxmldocfile.read())
-    outputfile = open(args.output_file + ".xml", mode='w')
-    print(myxmldoc.toprettyxml(), file=outputfile)
-    outputfile.close()
-    myxmldocfile.close()
+    with open((args.output_file + ".one.xml")) as myxmldocfile:
+        myxmldoc = minidom_parseString(myxmldocfile.read())
+    with open(args.output_file + ".xml", mode='w') as outputfile:
+        print(myxmldoc.toprettyxml(), file=outputfile)
     os.remove(args.output_file + ".one.xml")
 
     return 0
