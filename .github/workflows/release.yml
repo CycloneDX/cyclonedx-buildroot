@@ -16,6 +16,9 @@ env:
   POETRY_VERSION: "2.1.1"
   REPORTS_DIR: CI_reports
 
+# see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token
+permissions: {}
+
 jobs:
   quicktest:
     name: quick test

@@ -23,6 +23,9 @@ env:
   REPORTS_DIR: CI_reports
   TESTS_REPORTS_ARTIFACT: tests-reports
 
+# see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token
+permissions: {}
+
 jobs:
   # coding-standards:
     # TODO: run flake8
