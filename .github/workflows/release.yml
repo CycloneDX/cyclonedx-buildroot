@@ -109,7 +109,7 @@ jobs:
     steps:
       - name: Download all the dists
         # see https://github.com/actions/upload-artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: python-package-distributions
           path: dist/
@@ -142,7 +142,7 @@ jobs:
     steps:
       - name: Download all the release assets
         # see https://github.com/actions/upload-artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: python-package-released
           path: dist/
