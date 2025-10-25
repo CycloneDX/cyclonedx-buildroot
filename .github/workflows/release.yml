@@ -89,7 +89,7 @@ jobs:
           fi
       - name: artifact build results
         # see https://github.com/actions/upload-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: python-package-distributions
           path: dist/
@@ -121,7 +121,7 @@ jobs:
           # repository-url: https://test.pypi.org/legacy/  # uncomment to force upload to test-env
       - name: artifact release assets
         # see https://github.com/actions/upload-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: python-package-released
           path: dist/
