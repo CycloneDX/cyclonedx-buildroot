@@ -18,7 +18,6 @@
 import argparse
 import csv
 import json
-import os
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
@@ -180,15 +179,17 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     # Produce the output in pretty JSON format.
     bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
-    with open((args.output_file + ".json"), mode='w') as outputfile:
-        json.dump(json.loads(bom_json), outputfile, indent=3)
+    the_json_file = args.output_file + ".json"
+    with open(the_json_file, mode='w') as outputfile:
+        print (bom_json, file=outputfile)
 
     # Produce the output in XML format that is in a one-line format.
     my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
     serialized_xml = my_xml_outputter.output_as_string(indent=2)
 
-    # Produce the output in XML format that is indented format   
-    with open(args.output_file + ".xml", mode='w') as outputfile:
+    # Produce the output in XML format that is indented format
+    the_xml_file = args.output_file + ".xml"
+    with open(the_xml_file, mode='w') as outputfile:
         print(serialized_xml, file=outputfile)
 
     return 0
