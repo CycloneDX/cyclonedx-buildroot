@@ -185,13 +185,10 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     # Produce the output in XML format that is in a one-line format.
     my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
-    my_xml_outputter.output_to_file(filename=(args.output_file + ".one.xml"), allow_overwrite=True)
+    serialized_xml = my_xml_outputter.output_as_string(indent=2)
 
-    # Produce the output in XML format that is indented format.
-    with open((args.output_file + ".one.xml")) as myxmldocfile:
-        myxmldoc = minidom_parseString(myxmldocfile.read())
+    # Produce the output in XML format that is indented format   
     with open(args.output_file + ".xml", mode='w') as outputfile:
-        print(myxmldoc.toprettyxml(), file=outputfile)
-    os.remove(args.output_file + ".one.xml")
+        print(serialized_xml, file=outputfile)
 
     return 0
