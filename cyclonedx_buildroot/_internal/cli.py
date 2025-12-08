@@ -29,7 +29,7 @@ from defusedxml.minidom import parseString as minidom_parseString  # type: ignor
 from cyclonedx.exception.factory import InvalidLicenseExpressionException
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
-from cyclonedx.model.contact import OrganizationalEntity
+from cyclonedx.model.contact import OrganizationalEntity, OrganizationalContact
 
 
 if TYPE_CHECKING:
@@ -160,6 +160,12 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     parser.add_argument('-c', action='store', dest='cpe_input_file', default='unknown',
                         help='cpe file from make show-info')
 
+    parser.add_argument('-s', action='store', dest='supplier_name', default='unknown',
+                        help='name of SBOM supplier')
+
+    parser.add_argument('-a', action='store', dest='author_name', default='unknown',
+                        help='name of SBOM author')
+
     args = parser.parse_args(argv)
 
     print('Buildroot manifest input file: ' + args.input_file)
@@ -168,11 +174,16 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     print('SBOM Product Version: ' + args.product_version)
     print('SBOM Product Manufacturer: ' + args.manufacturer_name)
     print('Buildroot cpe input file: ' + args.cpe_input_file)
+    print('SBOM author: ' + args.author_name)
+    print('SBOM supplier: ' + args.supplier_name)
+
 
     br_bom = Bom()
     br_bom.metadata = BomMetaData(
         manufacturer=OrganizationalEntity(name=args.manufacturer_name),
-        component=Component(name=args.product_name, version=args.product_version)
+        component=Component(name=args.product_name, version=args.product_version),
+        supplier=OrganizationalEntity(name=args.supplier_name),
+        authors=[OrganizationalContact(name=args.author_name)]
     )
 
     br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
