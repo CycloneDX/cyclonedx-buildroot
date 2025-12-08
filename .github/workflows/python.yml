@@ -49,6 +49,9 @@ jobs:
       - name: Checkout
         # see https://github.com/actions/checkout
         uses: actions/checkout@v6
+      - name: Install gettext (macOS)
+        if: runner.os == 'macOS'
+        run: brew install gettext
       - name: Setup Python Environment
         # see https://github.com/actions/setup-python
         uses: actions/setup-python@v6
@@ -182,6 +185,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+      - name: Add Poetry to PATH
+        run: echo "${HOME}/.local/bin" >> $GITHUB_PATH
       - name: fetch test artifacts
         # see https://github.com/actions/download-artifact
         uses: actions/download-artifact@v6
