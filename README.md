@@ -67,6 +67,8 @@ options:
   -n PRODUCT_NAME       name of the product
   -v PRODUCT_VERSION    product version string
   -m MANUFACTURER_NAME  name of product manufacturer
+  -s SUPPLIER_NAME      name of SBOM Supplier
+  -a AUTHOR_NAME        name of SBOM Author
   -c CPE_INPUT_FILE     cpe file from make show-info
 ```
 
