@@ -24,12 +24,11 @@ exclude = [
     "docs/_build", "docs/processes",
 ]
 keywords = [
-  "OWASP", "CycloneDX",
-  "bill-of-materials", "BOM", "software-bill-of-materials","SBOM",
-  "environment", "virtualenv", "venv", "Poetry", "Pipenv", "requirements", "PDM", "Conda",
-  "SPDX", "licenses", "PURL", "package-url", "dependency-graph", "buildroot",
-]
-
+   "OWASP", "CycloneDX",
+   "bill-of-materials", "BOM", "software-bill-of-materials","SBOM",
+   "buildroot",
+   "SPDX", "licenses", "PURL", "package-url", "dependency-graph",
+ ]
 classifiers = [
   # Trove classifiers - https://packaging.python.org/specifications/core-metadata/#metadata-classifier
   # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
