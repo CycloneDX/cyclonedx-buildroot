@@ -165,6 +165,8 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     parser.add_argument('-a', action='store', dest='author_name', default='unknown',
                         help='name of SBOM author')
+    parser.add_argument('--json_only', action='store_true', dest='json_only', default=False,
+                        help='Just generate the SBOM in JSON format, do not generate XML.')
 
     args = parser.parse_args(argv)
 
@@ -192,6 +194,9 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
     with open((args.output_file + ".json"), mode='w') as outputfile:
         print(bom_json, file=outputfile)
+
+    if args.json_only:
+        return 0
 
     # Produce the output in XML format that is in a one-line format.
     my_xml_outputter: 'XmlOutputter' = make_outputter(br_bom, OutputFormat.XML, SchemaVersion.V1_6)
