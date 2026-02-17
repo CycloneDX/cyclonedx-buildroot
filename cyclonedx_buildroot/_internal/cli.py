@@ -18,9 +18,11 @@
 import argparse
 import csv
 import json
+import re
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
+from cyclonedx.model.license import DisjunctiveLicense
 from cyclonedx.output.json import BY_SCHEMA_VERSION
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
@@ -35,23 +37,43 @@ from cyclonedx.model.contact import OrganizationalEntity, OrganizationalContact
 if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
 
-# Splits a string by the given separator character except inside parentheses.
-def _split_non_parenthesized(text: str, separator: str) -> List[str]:
+# Splits a string by the given separators list except inside parentheses.
+def _split_non_parenthesized(text: str, separators: List[str]) -> List[str]:
+    # Sort separators by length descending to match longer ones first (e.g. 'AND' before 'A')
+    # and escape them for regex
+    sorted_separators = sorted(separators, key=len, reverse=True)
+    pattern = '|'.join(re.escape(s) for s in sorted_separators)
+
     fragments = []
     current_fragment = ''
     parentheses_count = 0
-    for c in text:
-        if c == separator and parentheses_count == 0:
-            fragments.append(current_fragment)
-            current_fragment = ''
-        else:
-            current_fragment += c
-            if c == ')' and parentheses_count > 0: parentheses_count -= 1
-            if c == '(': parentheses_count += 1
+    i = 0
+    while i < len(text):
+        if parentheses_count == 0:
+            match = re.match(pattern, text[i:])
+            if match:
+                fragments.append(current_fragment.strip())
+                current_fragment = ''
+                i += len(match.group(0))
+                continue
 
-    fragments.append(current_fragment)
-    return fragments
+        c = text[i]
+        current_fragment += c
+        if c == ')' and parentheses_count > 0:
+            parentheses_count -= 1
+        elif c == '(':
+            parentheses_count += 1
+        i += 1
 
+    fragments.append(current_fragment.strip())
+    return [f for f in fragments if f]
+
+def _remove_bracket_part_from_license(license_string: str) -> str:
+    return re.sub(r"\(.*?\)", "", license_string)
+
+def _convert_comma_to_and(license_string: str) -> str:
+    license_parts = license_string.split(",")
+    return " AND ".join([part.strip() for part in license_parts])
 
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
@@ -69,42 +91,60 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
     with open(input_file_name, newline='') as csvfile:
         spread_sheet = csv.DictReader(csvfile)
 
-        for row in spread_sheet:
-            try:
+        local_components = {}
+        try:
+            for row in spread_sheet:
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
                 purl_info = PackageURL(type='generic', name=row['PACKAGE'], version=row['VERSION'],
                                        qualifiers={'download_url': download_url_with_slash})
 
                 lfac = LicenseFactory()
+                package_name = row['PACKAGE']
                 license_string = row['LICENSE']
-                # TODO license_list not used something is wrong.
-                license_list = _split_non_parenthesized(license_string, ",")
 
-                try:
-                    license_for_component = [lfac.make_with_expression(license_string)]
-                except InvalidLicenseExpressionException:
-                    license_for_component = []
+                license_for_component = []
+                if lazy:
+                    try:
+                        striped = _remove_bracket_part_from_license(license_string)
+                        anded = _convert_comma_to_and(striped)
+                        license_for_component = [lfac.make_with_expression(anded)]
+                    except InvalidLicenseExpressionException:
+                        print(f"WARNING: The license '{license_string}' for {package_name} could not be handled as a SPDX expression!")
+                        license_list = _split_non_parenthesized(license_string, [",", " or ", " OR "])
+                        for license_txt in license_list:
+                            # go through all refered licenses and try to separate the part in brackets
+                            # license is documented in buildroot documentation chapter 18.6.2. generic-package reference (LIBFOO_LICENSE)
+                            #    e.g.: FOO_LICENSE += , GPL-2.0+ (programs)
+                            parts = re.findall("(\S+)(\s\(.*\))?", license_txt)
+                            license = None
+                            if len(parts) == 1:
+                                if parts[0][1].strip() != "":
+                                    # take the first part for license and add the full license string as text
+                                    license = DisjunctiveLicense(id=parts[0][0], text=license_txt)
+                            if license is None:
+                                license = DisjunctiveLicense(id=license_txt)
+                            license_for_component.append(license)
+                else:
+                    try:
+                        license_for_component = [lfac.make_with_expression(license_string)]
+                    except InvalidLicenseExpressionException:
+                        pass
 
                 cpe_id_value: Optional[str] = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 if cpe_id_value == "":
                     cpe_id_value = None
-                next_component = Component(name=row['PACKAGE'],
+                next_component = Component(name=package_name,
                                            type=ComponentType.FIRMWARE,
                                            licenses=license_for_component,
                                            version=row['VERSION'],
                                            purl=purl_info,
                                            cpe=cpe_id_value,
                                            bom_ref=row['PACKAGE'])
-
+                local_components[package_name] = next_component
                 br_bom_local.components.add(next_component)
                 br_bom_local.register_dependency(root_component, [next_component])
-            except KeyError:
-                print("The input file header does not contain the expected data in the first row of the file.")
-                print(
-                    "Expected PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES")
-                print("Found the following in the csv file first row:", row)
-                print("Cannot continue with the provided input file. Exiting.")
-                exit(-1)
+
+
 
     return br_bom_local
 
