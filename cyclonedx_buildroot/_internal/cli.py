@@ -57,7 +57,7 @@ def _split_non_parenthesized(text: str, separator: str) -> List[str]:
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
 # noinspection PyTypeChecker
-def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom) -> Bom:
+def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom, lazy=False) -> Bom:
     br_bom_local = br_bom
     root_component = br_bom.metadata.component
     assert root_component is not None
@@ -165,6 +165,8 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     parser.add_argument('-a', action='store', dest='author_name', default='unknown',
                         help='name of SBOM author')
+    parser.add_argument('--lazy', action='store_true', dest='lazy', default=False,
+                        help='Reports invalid license format as warning, but include them in the SBOM.')
     parser.add_argument('--json_only', action='store_true', dest='json_only', default=False,
                         help='Just generate the SBOM in JSON format, do not generate XML.')
 
@@ -188,7 +190,7 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
         authors=[OrganizationalContact(name=args.author_name)]
     )
 
-    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
+    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom, args.lazy)
 
     # Produce the output in pretty JSON format.
     bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
