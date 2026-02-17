@@ -91,7 +91,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
     with open(input_file_name, newline='') as csvfile:
         spread_sheet = csv.DictReader(csvfile)
 
-        local_components = {}
+        local_components = {}  # used to link dependencies
         try:
             for row in spread_sheet:
                 download_url_with_slash = row['SOURCE SITE'] + "/" + row['SOURCE ARCHIVE']
@@ -105,6 +105,8 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
                 license_for_component = []
                 if lazy:
                     try:
+                        # first try to remove the brackets and replace comma with AND
+                        #  GPL-2.0+, GPL-2.0 (py-smbus), LGPL-2.1+ (libi2c) --> GPL-2.0+ AND GPL-2.0 AND LGPL-2.1+
                         striped = _remove_bracket_part_from_license(license_string)
                         anded = _convert_comma_to_and(striped)
                         license_for_component = [lfac.make_with_expression(anded)]
@@ -112,6 +114,7 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
                         print(f"WARNING: The license '{license_string}' for {package_name} could not be handled as a SPDX expression!")
                         license_list = _split_non_parenthesized(license_string, [",", " or ", " OR "])
                         for license_txt in license_list:
+                            # if this doesn't work we represent license without checking for SPDX
                             # go through all refered licenses and try to separate the part in brackets
                             # license is documented in buildroot documentation chapter 18.6.2. generic-package reference (LIBFOO_LICENSE)
                             #    e.g.: FOO_LICENSE += , GPL-2.0+ (programs)
@@ -145,6 +148,30 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
                 br_bom_local.register_dependency(root_component, [next_component])
 
 
+            # handle component dependencies
+            csvfile.seek(0)
+            spread_sheet = csv.DictReader(csvfile)
+            for row in spread_sheet:
+                dependencies_with_licenses = row['DEPENDENCIES WITH LICENSES']
+                package_name = row['PACKAGE']
+                if dependencies_with_licenses != "":
+                    deps = re.findall("\[.*?\]|\s|([a-zA-Z0-9+\-.]+)", dependencies_with_licenses)
+                    dependencies = []
+                    for dep in deps:
+                        if dep == "": continue
+                        if dep not in local_components:
+                            print(f"WARNING: The component '{dep}' does not exist, and can not be added to '{package_name}' dependencies.")
+                            continue
+                        dependencies.append(local_components[dep])
+                    br_bom_local.register_dependency(local_components[package_name], dependencies)
+
+        except KeyError as ex:
+            print("The input file header does not contain the expected data in the first row of the file.")
+            print(
+                "Expected PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES")
+            print("Found the following in the csv file first row:", row)
+            print("Cannot continue with the provided input file. Exiting.")
+            exit(-1)
 
     return br_bom_local
 
