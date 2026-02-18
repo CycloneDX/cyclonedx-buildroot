@@ -21,6 +21,7 @@ import json
 import re
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
+from cyclonedx.model import AttachedText
 from cyclonedx.model.bom import Bom, BomMetaData
 from cyclonedx.model.license import DisjunctiveLicense
 from cyclonedx.output.json import BY_SCHEMA_VERSION
@@ -79,7 +80,7 @@ def _convert_comma_to_and(license_string: str) -> str:
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
 # noinspection PyTypeChecker
-def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom, lazy=False) -> Bom:
+def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom, lazy: bool=False) -> Bom:
     br_bom_local = br_bom
     root_component = br_bom.metadata.component
     assert root_component is not None
@@ -123,10 +124,11 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom,
                             if len(parts) == 1:
                                 if parts[0][1].strip() != "":
                                     # take the first part for license and add the full license string as text
-                                    license = DisjunctiveLicense(id=parts[0][0], text=license_txt)
+                                    text = AttachedText(content=license_txt)
+                                    license = DisjunctiveLicense(id=parts[0][0], text=text)
                             if license is None:
                                 license = DisjunctiveLicense(id=license_txt)
-                            license_for_component.append(license)
+                            license_for_component.append(license)  # type: ignore[arg-type]
                 else:
                     try:
                         license_for_component = [lfac.make_with_expression(license_string)]
