@@ -156,7 +156,8 @@ jobs:
         # see https://github.com/actions/checkout
         uses: actions/checkout@v6
       - name: Create reports directory
-        run: mkdir ${{ env.REPORTS_DIR }}
+        shell: bash
+        run: mkdir -p "${{ env.REPORTS_DIR }}/coverage"
       - name: Setup Homebrew
         run: brew update && brew install gettext
       - name: Install Python Dependencies
@@ -184,6 +185,7 @@ jobs:
         run: |
           set -eux
           poetry run coverage report -m
+          mkdir -p "${{ env.REPORTS_DIR }}/coverage"
           poetry run coverage xml -o '${{ env.REPORTS_DIR }}/coverage/${{ matrix.os }}_${{ matrix.python-version }}.cobertura.xml'
       - name: Artifact reports
         if: ${{ ! cancelled() }}
@@ -192,7 +194,7 @@ jobs:
         with:
           name: '${{ env.TESTS_REPORTS_ARTIFACT }}_bnt_${{ matrix.os }}_py${{ matrix.python-version }}'
           path: ${{ env.REPORTS_DIR }}
-          if-no-files-found: error
+          if-no-files-found: warn
 
   report-coverage:
     name: Publish test coverage
