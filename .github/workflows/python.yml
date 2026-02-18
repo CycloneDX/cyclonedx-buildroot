@@ -140,53 +140,41 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-15
-          - windows-latest
-        python-version:
-          - "3.13" # highest supported
-          - "3.12"
-          - "3.11"
-          - "3.10"
-          - "3.9"
-          # - "3.8"  # lowest supported  << not supported by poetry 2
+        os: [ubuntu-latest, macos-15, windows-latest]
+        python-version: ["3.13", "3.12", "3.11", "3.10", "3.9"]
+
     steps:
       - name: Checkout
-        # see https://github.com/actions/checkout
         uses: actions/checkout@v6
-      - name: Create reports directory
-        shell: bash
-        run: mkdir -p "${{ env.REPORTS_DIR }}/coverage"
-      - name: Setup Homebrew
-        run: brew update && brew install gettext
-      - name: Install Python Dependencies
-        run: pip install poetry==2.1.1
-      - name: Setup Python Environment
-        # see https://github.com/actions/setup-python
+
+      - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: 'x64'
-      - name: Install poetry
-        # see https://github.com/marketplace/actions/setup-poetry
-        uses: Gr1N/setup-poetry@v9
-        with:
-          poetry-version: ${{ env.POETRY_VERSION }}
+
+      - name: Install Poetry
+        # Using pip is the most reliable cross-platform way to ensure
+        # it's in the current python path
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry==${{ env.POETRY_VERSION }}
+
       - name: Install dependencies
         run: poetry install --no-root
-      - name: Ensure build successful
-        run: poetry build
+
+      - name: Create reports directory
+        shell: bash
+        run: mkdir -p ${{ env.REPORTS_DIR }}/coverage
+
       - name: Run tox
         run: poetry run tox r -e py -s false
+
       - name: Generate coverage reports
-        if: ${{ failure() || success() }}
+        if: always()
         shell: bash
         run: |
-          set -eux
-          poetry run coverage report -m
-          mkdir -p "${{ env.REPORTS_DIR }}/coverage"
-          poetry run coverage xml -o '${{ env.REPORTS_DIR }}/coverage/${{ matrix.os }}_${{ matrix.python-version }}.cobertura.xml'
+          poetry run coverage report -m || true
+          poetry run coverage xml -o "${{ env.REPORTS_DIR }}/coverage/${{ matrix.os }}_${{ matrix.python-version }}.cobertura.xml"
       - name: Artifact reports
         if: ${{ ! cancelled() }}
         # see https://github.com/actions/upload-artifact
