@@ -49,6 +49,11 @@ class TestRunCli(unittest.TestCase):
         res, out, err = run_cli("-m", "unittest_manufacturer_name")
         self.assertEqual(0, res, '\n'.join((out, err)))
 
+    def test_valid_output_file_only_for_lazy_conversion(self):
+        copy(join(DATA_DIR, "lazy_manifest.csv"), join(self.__tempdir.name, "manifest.csv"))
+        res, out, err = run_cli("-o", "unittest_output.txt", "--lazy", "--json_only")
+        self.assertEqual(0, res, '\n'.join((out, err)))
+
     # Test against the output of make show-info
 
     def test_valid_cpe_input_file(self):

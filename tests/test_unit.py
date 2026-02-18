@@ -18,11 +18,19 @@
 
 import unittest
 
-from cyclonedx_buildroot._internal.cli import _split_non_parenthesized
+from cyclonedx_buildroot._internal.cli import _split_non_parenthesized, _remove_bracket_part_from_license
 
 
 class TestUtils(unittest.TestCase):
 
     def test_split_non_parenthesized(self):
-        result = _split_non_parenthesized("aaa,bbb(ccc,ddd),eee", ",")
+        result = _split_non_parenthesized("aaa,bbb(ccc,ddd),eee", [","])
         self.assertListEqual(result, ['aaa', 'bbb(ccc,ddd)', 'eee'])
+
+    def test_split_non_parenthesized_enhanced(self):
+        result = _split_non_parenthesized("FTL or GPL-2.0+", [",", " or ", " OR "])
+        self.assertListEqual(result, ["FTL", "GPL-2.0+"])
+
+    def test_remove_bracket_part_from_license(self):
+        result = _remove_bracket_part_from_license("GPL-2.0+, GPL-2.0 (py-smbus), LGPL-2.1+ (libi2c)")
+        self.assertEqual(result, "GPL-2.0+, GPL-2.0 , LGPL-2.1+ ")
