@@ -26,7 +26,10 @@ from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
 from defusedxml.minidom import parseString as minidom_parseString  # type: ignore
-from cyclonedx.exception.factory import InvalidLicenseExpressionException
+from cyclonedx.exception.factory import (
+    InvalidLicenseExpressionException,
+    InvalidSpdxLicenseException,
+)
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
 from cyclonedx.model.contact import OrganizationalEntity, OrganizationalContact
@@ -53,6 +56,13 @@ def _split_non_parenthesized(text: str, separator: str) -> List[str]:
     return fragments
 
 
+def _resolve_license_fragment(lfac: LicenseFactory, fragment: str) -> Any:
+    try:
+        return lfac.make_with_id(fragment)
+    except InvalidSpdxLicenseException:
+        return lfac.make_with_name(fragment)
+
+
 # Buildroot manifest.csv file header shows the following header row
 # PACKAGE,VERSION,LICENSE,LICENSE FILES,SOURCE ARCHIVE,SOURCE SITE,DEPENDENCIES WITH LICENSES
 #
@@ -77,13 +87,15 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
 
                 lfac = LicenseFactory()
                 license_string = row['LICENSE']
-                # TODO license_list not used something is wrong.
-                license_list = _split_non_parenthesized(license_string, ",")
 
                 try:
                     license_for_component = [lfac.make_with_expression(license_string)]
                 except InvalidLicenseExpressionException:
-                    license_for_component = []
+                    license_list = _split_non_parenthesized(license_string, ",")
+                    license_for_component = [
+                        _resolve_license_fragment(lfac, fragment.strip())
+                        for fragment in license_list
+                    ]
 
                 cpe_id_value: Optional[str] = get_cpe_value(cpe_file_name, row['PACKAGE'])
                 if cpe_id_value == "":
