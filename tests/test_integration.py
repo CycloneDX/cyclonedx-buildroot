@@ -62,3 +62,7 @@ class TestRunCli(unittest.TestCase):
         copy(join(DATA_DIR, "manifest.csv"), join(self.__tempdir.name, "manifest.csv"))
         res, out, err = run_cli("-c", join(DATA_DIR, "cpe_data_show_pkg_stats.json"))
         self.assertEqual(0, res, '\n'.join((out, err)))
+
+    def test_config_file_only(self):
+        res, out, err = run_cli("-f", join(DATA_DIR, "config.ini"))
+        self.assertEqual(0, res, '\n'.join((out, err)))

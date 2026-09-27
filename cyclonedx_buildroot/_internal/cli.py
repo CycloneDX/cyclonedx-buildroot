@@ -18,6 +18,7 @@
 import argparse
 import csv
 import json
+import os
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
@@ -33,10 +34,71 @@ from cyclonedx.exception.factory import (
 from cyclonedx.schema import SchemaVersion, OutputFormat
 from cyclonedx.output import make_outputter
 from cyclonedx.model.contact import OrganizationalEntity, OrganizationalContact
-
+import configparser
 
 if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
+
+def read_config_file():
+    """Read configuration data from a file
+  -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
+  -o OUTPUT_FILE        SBOM output file name for json and xml
+  -n PRODUCT_NAME       name of the product
+  -v PRODUCT_VERSION    product version string
+  -m MANUFACTURER_NAME  name of product manufacturer
+  -s SUPPLIER_NAME      name of SBOM Supplier
+  -a AUTHOR_NAME        name of SBOM Author
+  -c CPE_INPUT_FILE     cpe file from make show-info
+  -f CONFIG_FILE        configuration file containing the above data
+
+    :return: a list of configuration data
+    :rtype: list()
+    """
+    path = 'config.ini'
+    configFileExists = os.path.isfile(path)
+
+    if not configFileExists:
+        print('Creating config.ini with default content, please edit the file to add values.')
+        f = open(path, "w")
+        f.write("[CyloneDX_Buildroot]\n")
+        f.write("INPUT_FILE = <replace with name of input file>\n")
+        f.write("OUTPUT_FILE = <replace with name of output file>\n")
+        f.write("PRODUCT_NAME = <replace with name of product>\n")
+        f.write("PRODUCT_VERSION = <replace with product version>\n")
+        f.write("MANUFACTURER_NAME = <replace with name of product manufacturer>\n")
+        f.write("SUPPLIER_NAME = <replace with name of product supplier>\n")
+        f.write("AUTHOR_NAME = <replace with name of product author>\n")
+        f.write("CPE_INPUT_FILE = <replace with name of CPE file>\n")
+        f.close()
+        exit(0)
+    else:
+        # Get config.ini data to populate a ConfigParser object
+        config = configparser.ConfigParser()
+        config.read(path)
+
+        # Access values from the configuration file
+        input_file        = config.get('CyloneDX_Buildroot', 'input_file')
+        output_file       = config.get('CyloneDX_Buildroot', 'output_file')
+        product_name      = config.get('CyloneDX_Buildroot', 'product_name')
+        product_version   = config.get('CyloneDX_Buildroot', 'product_version')
+        manufacturer_name = config.get('CyloneDX_Buildroot', 'manufacturer_name')
+        supplier_name     = config.get('CyloneDX_Buildroot', 'supplier_name')
+        author_name       = config.get('CyloneDX_Buildroot', 'author_name')
+        cpe_input_file    = config.get('CyloneDX_Buildroot', 'cpe_input_file')
+
+        # Return a dictionary with the retrieved values
+        config_values = {
+            'input_file': input_file,
+            'output_file': output_file,
+            'product_name': product_name,
+            'product_version': product_version,
+            'manufacturer_name': manufacturer_name,
+            'supplier_name': supplier_name,
+            'author_name': author_name,
+            'cpe_input_file': cpe_input_file,
+        }
+
+    return config_values
 
 # Splits a string by the given separator character except inside parentheses.
 def _split_non_parenthesized(text: str, separator: str) -> List[str]:
@@ -161,6 +223,8 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
 def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, NoReturn]:
 
     parser = argparse.ArgumentParser(description='CycloneDX BOM Generator', **kwargs)
+    parser.add_argument('-f', dest='config_file_name',  metavar="FILE", default=None,
+                        help='Path to a configuration file name (optional)')
     parser.add_argument('-i', action='store', dest='input_file', default='manifest.csv',
                         help='comma separated value (csv) file of buildroot manifest data')
     parser.add_argument('-o', action='store', dest='output_file', default='buildroot_IOT_sbom',
@@ -180,29 +244,51 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
 
     args = parser.parse_args(argv)
 
-    print('Buildroot manifest input file: ' + args.input_file)
-    print('Output SBOM: ' + args.output_file)
-    print('SBOM Product Name: ' + args.product_name)
-    print('SBOM Product Version: ' + args.product_version)
-    print('SBOM Product Manufacturer: ' + args.manufacturer_name)
-    print('Buildroot cpe input file: ' + args.cpe_input_file)
-    print('SBOM author: ' + args.author_name)
-    print('SBOM supplier: ' + args.supplier_name)
+    input_file = args.input_file
+    output_file = args.output_file
+    product_name = args.product_name
+    product_version = args.product_version
+    manufacturer_name = args.manufacturer_name
+    cpe_input_file = args.cpe_input_file
+    author_name = args.author_name
+    supplier_name = args.supplier_name
 
+    # default behavior expects user data supplied on the command line
+    if args.config_file_name is None:
+        print('Buildroot manifest input file: ' + input_file)
+        print('Output SBOM: ' + output_file)
+        print('SBOM Product Name: ' + product_name)
+        print('SBOM Product Version: ' + product_version)
+        print('SBOM Product Manufacturer: ' + manufacturer_name)
+        print('Buildroot cpe input file: ' + cpe_input_file)
+        print('SBOM author: ' + author_name)
+        print('SBOM supplier: ' + supplier_name)
+    else:
+        # get data from the user specified configuration file
+        config_data = read_config_file()
+
+        input_file = config_data['input_file']
+        output_file = config_data['output_file']
+        product_name= config_data['product_name']
+        product_version= config_data['product_version']
+        manufacturer_name= config_data['manufacturer_name']
+        supplier_name= config_data['supplier_name']
+        author_name= config_data['author_name']
+        cpe_input_file= config_data['cpe_input_file']
 
     br_bom = Bom()
     br_bom.metadata = BomMetaData(
-        manufacturer=OrganizationalEntity(name=args.manufacturer_name),
-        component=Component(name=args.product_name, version=args.product_version),
-        supplier=OrganizationalEntity(name=args.supplier_name),
-        authors=[OrganizationalContact(name=args.author_name)]
+        manufacturer=OrganizationalEntity(name=manufacturer_name),
+        component=Component(name=product_name, version=product_version),
+        supplier=OrganizationalEntity(name=supplier_name),
+        authors=[OrganizationalContact(name=author_name)]
     )
 
-    br_bom = create_buildroot_sbom(str(args.input_file).strip(" "), str(args.cpe_input_file).strip(" "), br_bom)
+    br_bom = create_buildroot_sbom(str(input_file).strip(" "), str(cpe_input_file).strip(" "), br_bom)
 
     # Produce the output in pretty JSON format.
     bom_json = BY_SCHEMA_VERSION[SchemaVersion.V1_6](br_bom).output_as_string(indent=3)
-    with open((args.output_file + ".json"), mode='w') as outputfile:
+    with open((output_file + ".json"), mode='w') as outputfile:
         print(bom_json, file=outputfile)
 
     # Produce the output in XML format that is in a one-line format.
@@ -210,7 +296,7 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
     serialized_xml = my_xml_outputter.output_as_string(indent=2)
 
     # Produce the output in XML format that is indented format.
-    with open(args.output_file + ".xml", mode='w') as outputfile:
+    with open(output_file + ".xml", mode='w') as outputfile:
         print(serialized_xml, file=outputfile)
 
     return 0
