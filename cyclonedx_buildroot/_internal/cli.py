@@ -15,12 +15,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2023 OWASP Foundation. All Rights Reserved.
 
+from __future__ import annotations
 import argparse
 import csv
 import json
 import os
-from csv import DictWriter
-from os import getcwd
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
