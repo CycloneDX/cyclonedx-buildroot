@@ -70,6 +70,7 @@ options:
   -s SUPPLIER_NAME      name of SBOM Supplier
   -a AUTHOR_NAME        name of SBOM Author
   -c CPE_INPUT_FILE     cpe file from make show-info
+  -f CONFIGURATION_FILE the above data contained in a config.ini file
 ```
 
 ### Example
