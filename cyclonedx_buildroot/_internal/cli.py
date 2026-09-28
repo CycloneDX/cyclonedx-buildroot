@@ -41,7 +41,7 @@ import configparser
 if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
 
-def read_config_file(path) -> dict[str, str] :
+def read_config_file(path: str) -> dict[str, str] :
     """Read configuration data from a file
   -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
   -o OUTPUT_FILE        SBOM output file name for json and xml
