@@ -19,6 +19,8 @@ import argparse
 import csv
 import json
 import os
+from csv import DictWriter
+from os import getcwd
 from typing import Optional, Sequence, Any, Union, NoReturn, List, TYPE_CHECKING
 
 from cyclonedx.model.bom import Bom, BomMetaData
@@ -39,7 +41,7 @@ import configparser
 if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
 
-def read_config_file():
+def read_config_file(path) -> dict[str, str] :
     """Read configuration data from a file
   -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
   -o OUTPUT_FILE        SBOM output file name for json and xml
@@ -54,13 +56,13 @@ def read_config_file():
     :return: a list of configuration data
     :rtype: list()
     """
-    path = 'config.ini'
+
     configFileExists = os.path.isfile(path)
 
     if not configFileExists:
         print('Creating config.ini with default content, please edit the file to add values.')
         f = open(path, "w")
-        f.write("[CyloneDX_Buildroot]\n")
+        f.write("[CycloneDX_Buildroot]\n")
         f.write("INPUT_FILE = <replace with name of input file>\n")
         f.write("OUTPUT_FILE = <replace with name of output file>\n")
         f.write("PRODUCT_NAME = <replace with name of product>\n")
@@ -70,21 +72,24 @@ def read_config_file():
         f.write("AUTHOR_NAME = <replace with name of product author>\n")
         f.write("CPE_INPUT_FILE = <replace with name of CPE file>\n")
         f.close()
+        config_values = {}
         exit(0)
     else:
+        print('Found existing config file')
+
         # Get config.ini data to populate a ConfigParser object
         config = configparser.ConfigParser()
         config.read(path)
 
         # Access values from the configuration file
-        input_file        = config.get('CyloneDX_Buildroot', 'input_file')
-        output_file       = config.get('CyloneDX_Buildroot', 'output_file')
-        product_name      = config.get('CyloneDX_Buildroot', 'product_name')
-        product_version   = config.get('CyloneDX_Buildroot', 'product_version')
-        manufacturer_name = config.get('CyloneDX_Buildroot', 'manufacturer_name')
-        supplier_name     = config.get('CyloneDX_Buildroot', 'supplier_name')
-        author_name       = config.get('CyloneDX_Buildroot', 'author_name')
-        cpe_input_file    = config.get('CyloneDX_Buildroot', 'cpe_input_file')
+        input_file        = config.get('CycloneDX_Buildroot', 'input_file')
+        output_file       = config.get('CycloneDX_Buildroot', 'output_file')
+        product_name      = config.get('CycloneDX_Buildroot', 'product_name')
+        product_version   = config.get('CycloneDX_Buildroot', 'product_version')
+        manufacturer_name = config.get('CycloneDX_Buildroot', 'manufacturer_name')
+        supplier_name     = config.get('CycloneDX_Buildroot', 'supplier_name')
+        author_name       = config.get('CycloneDX_Buildroot', 'author_name')
+        cpe_input_file    = config.get('CycloneDX_Buildroot', 'cpe_input_file')
 
         # Return a dictionary with the retrieved values
         config_values = {
@@ -138,6 +143,9 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
     # Capture the components that describe the complete inventory of first-party software
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
     # the resulting JSON. Use a try/except block to help with run time issues.
+
+    cwd = {os.getcwd()}
+
     with open(input_file_name, newline='') as csvfile:
         spread_sheet = csv.DictReader(csvfile)
 
@@ -195,8 +203,17 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
     retval = ""
     if cpe_file_name == "unknown":
         return retval
-    with open(cpe_file_name) as cpe_file:
-        cpe_data = json.load(cpe_file)
+    try:
+        with open(cpe_file_name) as cpe_file:
+            cpe_data = json.load(cpe_file)
+    except FileNotFoundError:
+        import os
+        print(f"DEBUG: cpe_file_name = {cpe_file_name!r}")
+        print(f"DEBUG: os.getcwd() = {os.getcwd()}")
+        print(f"DEBUG: file exists = {os.path.exists(cpe_file_name)}")
+        print(f"DEBUG: os.path.abspath(input_file_name) = {os.path.abspath(cpe_file_name)}")
+        raise  # re-raise so the test still fails
+
     assert isinstance(cpe_data, dict)
     for cpe_key, cpe_value in cpe_data.items():
         try:
@@ -265,7 +282,7 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
         print('SBOM supplier: ' + supplier_name)
     else:
         # get data from the user specified configuration file
-        config_data = read_config_file()
+        config_data = read_config_file(args.config_file_name)
 
         input_file = config_data['input_file']
         output_file = config_data['output_file']
@@ -275,6 +292,12 @@ def run(*, argv: Optional[Sequence[str]] = None, **kwargs: Any) -> Union[int, No
         supplier_name= config_data['supplier_name']
         author_name= config_data['author_name']
         cpe_input_file= config_data['cpe_input_file']
+
+        # Support for proper pytest file path
+        config_dir = os.path.dirname(os.path.abspath(args.config_file_name))
+        if not os.path.isabs(input_file):
+            input_file = os.path.join(config_dir, input_file)
+            cpe_input_file = os.path.join(config_dir, cpe_input_file)
 
     br_bom = Bom()
     br_bom.metadata = BomMetaData(
