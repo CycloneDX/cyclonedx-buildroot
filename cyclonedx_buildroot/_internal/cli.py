@@ -40,20 +40,21 @@ if TYPE_CHECKING:
     from cyclonedx.output.xml import Xml as XmlOutputter
 
 def read_config_file(path: str) -> dict[str, str] :
-    """Read configuration data from a file
-  -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
-  -o OUTPUT_FILE        SBOM output file name for json and xml
-  -n PRODUCT_NAME       name of the product
-  -v PRODUCT_VERSION    product version string
-  -m MANUFACTURER_NAME  name of product manufacturer
-  -s SUPPLIER_NAME      name of SBOM Supplier
-  -a AUTHOR_NAME        name of SBOM Author
-  -c CPE_INPUT_FILE     cpe file from make show-info
-  -f CONFIG_FILE        configuration file containing the above data
+    """ Read configuration data from a file.
 
-    :return: a list of configuration data
-    :rtype: list()
-    """
+     -i INPUT_FILE         comma separated value (csv) file of buildroot manifest data
+     -o OUTPUT_FILE        SBOM output file name for JSON and XML
+     -n PRODUCT_NAME       name of the product
+     -v PRODUCT_VERSION    product version string
+     -m MANUFACTURER_NAME  name of product manufacturer
+     -s SUPPLIER_NAME      name of SBOM Supplier
+     -a AUTHOR_NAME        name of SBOM Author
+     -c CPE_INPUT_FILE     cpe file from make show-info
+     -f CONFIG_FILE        configuration file containing the above data
+
+        :return: a list of configuration data
+        :rtype: list()
+   """
 
     configFileExists = os.path.isfile(path)
 
@@ -203,7 +204,6 @@ def get_cpe_value(cpe_file_name: str, sw_component_name: str) -> str:
         with open(cpe_file_name) as cpe_file:
             cpe_data = json.load(cpe_file)
     except FileNotFoundError:
-        import os
         print(f"DEBUG: cpe_file_name = {cpe_file_name!r}")
         print(f"DEBUG: os.getcwd() = {os.getcwd()}")
         print(f"DEBUG: file exists = {os.path.exists(cpe_file_name)}")
