@@ -86,7 +86,7 @@ jobs:
           architecture: 'x64'
       - name: Install poetry
         # see https://github.com/marketplace/actions/setup-poetry
-        uses: Gr1N/setup-poetry@v48b0f77c8c1b1b19cb962f0f00dff7b4be8f81ec
+        uses: Gr1N/setup-poetry@48b0f77c8c1b1b19cb962f0f00dff7b4be8f81ec
         with:
           poetry-version: ${{ env.POETRY_VERSION }}
       - name: Install dependencies
