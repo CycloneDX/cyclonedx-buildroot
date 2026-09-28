@@ -27,7 +27,6 @@ from cyclonedx.output.json import BY_SCHEMA_VERSION
 from cyclonedx.model.component import Component, ComponentType
 from packageurl import PackageURL
 from cyclonedx.factory.license import LicenseFactory
-from defusedxml.minidom import parseString as minidom_parseString  # type: ignore
 from cyclonedx.exception.factory import (
     InvalidLicenseExpressionException,
     InvalidSpdxLicenseException,
@@ -142,8 +141,6 @@ def create_buildroot_sbom(input_file_name: str, cpe_file_name: str, br_bom: Bom)
     # Capture the components that describe the complete inventory of first-party software
     # Buildroot CSV file supplies software package data in each row. Any change to that map of data will break
     # the resulting JSON. Use a try/except block to help with run time issues.
-
-    cwd = {os.getcwd()}
 
     with open(input_file_name, newline='') as csvfile:
         spread_sheet = csv.DictReader(csvfile)
