@@ -43,9 +43,8 @@ jobs:
           - python-version: '3.13'  # latest
             os: ubuntu-latest
             toxenv-factors: '-current'
-          - # python-version: '3.8'   # lowest supported  << not supported by poetry 2
-            python-version: '3.9'
-            os: ubuntu-latest
+          - python-version: '3.9'
+            os: ubuntu-24.04 
             toxenv-factors: '-lowest'
     steps:
       - name: Checkout
@@ -142,6 +141,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-15, windows-latest]
         python-version: ["3.13", "3.12", "3.11", "3.10", "3.9"]
+        exclude:
+          - os: ubuntu-latest
+            python-version: "3.9"
+        include:
+          - os: ubuntu-24.04
+            python-version: "3.9"
 
     steps:
       - name: Checkout
